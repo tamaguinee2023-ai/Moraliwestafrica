@@ -1,0 +1,2214 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="obsidienne">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Morali West Africa — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ===== THÈME OBSIDIENNE ===== */
+:root {
+  --bg: #050607;
+  --surface: #0b0d10;
+  --surface2: #111419;
+  --surface3: #161a20;
+  --surface4: #1c2128;
+  --border: #1c2128;
+  --border2: #252c35;
+  --border3: #2f3945;
+  --gold: #d4af37;
+  --gold-light: #f1d27a;
+  --gold-bright: #fff3c4;
+  --gold-dim: rgba(212,175,55,0.08);
+  --gold-glow: rgba(212,175,55,0.18);
+  --gold-line: rgba(212,175,55,0.28);
+  --text: #f5f7fa;
+  --text2: #b8c2cc;
+  --muted: #6b7785;
+  --muted2: #3b4552;
+  --danger: #e05c5c;
+  --danger-dim: rgba(224,92,92,0.12);
+  --success: #4caf82;
+  --success-dim: rgba(76,175,130,0.12);
+  --warning: #e0a550;
+  --warning-dim: rgba(224,165,80,0.12);
+  --info: #5c9ee0;
+  --info-dim: rgba(92,158,224,0.12);
+  --shadow: 0 8px 30px rgba(0,0,0,.7);
+  --shadow-lg: 0 20px 70px rgba(0,0,0,.9);
+  --glow: 0 0 40px rgba(212,175,55,.12);
+  --sidebar-w: 260px;
+  --topbar-h: 64px;
+}
+
+html, body {
+  height: 100%;
+  background: #050607;
+  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  overflow: hidden;
+}
+
+body {
+  background:
+    radial-gradient(circle at 15% 0%, rgba(212,175,55,.07) 0%, transparent 45%),
+    radial-gradient(circle at 85% 95%, rgba(212,175,55,.04) 0%, transparent 40%),
+    #050607;
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--surface); }
+::-webkit-scrollbar-thumb { background: var(--border3); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gold-line); }
+
+/* ===== LAYOUT ===== */
+#app { display: flex; height: 100vh; }
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  width: var(--sidebar-w);
+  min-width: var(--sidebar-w);
+  background: linear-gradient(180deg, #0d0f13 0%, #050607 100%);
+  border-right: 1px solid var(--gold-line);
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  position: relative;
+  z-index: 10;
+  overflow: hidden;
+}
+
+.sidebar::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+.sidebar-logo {
+  padding: 22px 20px 18px;
+  border-bottom: 1px solid var(--border2);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-emblem {
+  width: 38px; height: 38px;
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 700;
+  font-size: 18px;
+  color: #050607;
+  box-shadow: 0 4px 16px var(--gold-glow);
+  flex-shrink: 0;
+}
+
+.logo-text { flex: 1; }
+.logo-text .brand { font-family: 'Cormorant Garamond', serif; font-size: 16px; font-weight: 700; color: var(--gold-bright); letter-spacing: .03em; line-height: 1.2; }
+.logo-text .sub { font-size: 10px; color: var(--muted); letter-spacing: .12em; text-transform: uppercase; font-family: 'DM Mono', monospace; }
+
+.admin-badge {
+  margin: 14px 16px;
+  padding: 8px 12px;
+  background: var(--gold-dim);
+  border: 1px solid var(--gold-line);
+  border-radius: 8px;
+  display: flex; align-items: center; gap: 8px;
+  font-size: 11px;
+  color: var(--gold-light);
+  font-family: 'DM Mono', monospace;
+  letter-spacing: .08em;
+}
+
+.admin-badge svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+.sidebar-section-label {
+  padding: 16px 16px 6px;
+  font-size: 10px;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--muted2);
+}
+
+.nav-item {
+  display: flex; align-items: center; gap: 11px;
+  padding: 9px 16px;
+  cursor: pointer;
+  border-radius: 8px;
+  margin: 1px 8px;
+  transition: all .18s ease;
+  color: var(--muted);
+  font-size: 13.5px;
+  font-weight: 400;
+  position: relative;
+  border: 1px solid transparent;
+}
+
+.nav-item svg { width: 16px; height: 16px; flex-shrink: 0; opacity: .7; transition: opacity .18s; }
+.nav-item:hover { background: var(--gold-dim); color: var(--text2); border-color: var(--border2); }
+.nav-item:hover svg { opacity: 1; }
+
+.nav-item.active {
+  background: linear-gradient(135deg, rgba(212,175,55,.15), rgba(212,175,55,.06));
+  color: var(--gold-light);
+  border-color: var(--gold-line);
+  font-weight: 500;
+  box-shadow: inset 0 0 0 1px rgba(212,175,55,.08);
+}
+
+.nav-item.active svg { opacity: 1; color: var(--gold); }
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: -8px; top: 50%; transform: translateY(-50%);
+  width: 3px; height: 60%;
+  background: var(--gold);
+  border-radius: 2px;
+  box-shadow: 0 0 8px var(--gold-glow);
+}
+
+.nav-badge {
+  margin-left: auto;
+  background: var(--gold-dim);
+  color: var(--gold);
+  border: 1px solid var(--gold-line);
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  padding: 1px 7px;
+  border-radius: 10px;
+  min-width: 22px;
+  text-align: center;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 16px;
+  border-top: 1px solid var(--border2);
+}
+
+.user-profile {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all .18s;
+}
+
+.user-profile:hover { border-color: var(--gold-line); background: var(--gold-dim); }
+
+.avatar {
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700;
+  color: #050607;
+  flex-shrink: 0;
+}
+
+.user-info { flex: 1; min-width: 0; }
+.user-info .uname { font-size: 13px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.user-info .urole { font-size: 10px; color: var(--gold); font-family: 'DM Mono', monospace; letter-spacing: .06em; }
+
+/* ===== MAIN ===== */
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+/* ===== TOPBAR ===== */
+.topbar {
+  height: var(--topbar-h);
+  min-height: var(--topbar-h);
+  background: rgba(11,13,16,.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border2);
+  display: flex; align-items: center;
+  padding: 0 28px;
+  gap: 16px;
+  position: relative;
+  z-index: 5;
+}
+
+.topbar-title { display: flex; align-items: baseline; gap: 10px; flex: 1; }
+.topbar-title h1 { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; color: var(--gold-bright); letter-spacing: .02em; }
+.topbar-title .breadcrumb { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: .1em; }
+
+.topbar-actions { display: flex; align-items: center; gap: 10px; }
+
+.topbar-btn {
+  display: flex; align-items: center; gap: 6px;
+  padding: 7px 14px;
+  background: transparent;
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  color: var(--text2);
+  font-size: 12.5px;
+  cursor: pointer;
+  transition: all .18s;
+  font-family: 'Outfit', sans-serif;
+}
+
+.topbar-btn:hover { border-color: var(--gold-line); color: var(--gold-light); background: var(--gold-dim); }
+.topbar-btn svg { width: 14px; height: 14px; }
+
+.topbar-divider { width: 1px; height: 28px; background: var(--border2); }
+
+.notification-btn {
+  width: 36px; height: 36px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: all .18s;
+  color: var(--muted);
+}
+
+.notification-btn:hover { border-color: var(--gold-line); color: var(--gold-light); }
+.notification-btn svg { width: 16px; height: 16px; }
+.notif-dot { position: absolute; top: 6px; right: 6px; width: 7px; height: 7px; background: var(--gold); border-radius: 50%; border: 1.5px solid var(--surface); box-shadow: 0 0 6px var(--gold-glow); }
+
+/* ===== CONTENT ===== */
+.content { flex: 1; overflow-y: auto; padding: 28px; }
+
+/* ===== PANELS ===== */
+.panel { display: none; animation: fadeUp .3s ease; }
+.panel.active { display: block; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== STATS GRID ===== */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: linear-gradient(145deg, rgba(255,255,255,.025), rgba(255,255,255,.008));
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  padding: 18px 20px;
+  position: relative;
+  overflow: hidden;
+  transition: all .2s;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  border-radius: 12px 12px 0 0;
+}
+
+.stat-card.gold::before { background: linear-gradient(90deg, var(--gold), var(--gold-light)); }
+.stat-card.blue::before { background: linear-gradient(90deg, var(--info), #7dbff5); }
+.stat-card.green::before { background: linear-gradient(90deg, var(--success), #6dd4a8); }
+.stat-card.red::before { background: linear-gradient(90deg, var(--danger), #f07070); }
+
+.stat-card:hover { border-color: var(--border3); transform: translateY(-1px); box-shadow: var(--shadow); }
+
+.stat-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.stat-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+.stat-icon svg { width: 18px; height: 18px; }
+.stat-icon.gold { background: var(--gold-dim); color: var(--gold); }
+.stat-icon.blue { background: var(--info-dim); color: var(--info); }
+.stat-icon.green { background: var(--success-dim); color: var(--success); }
+.stat-icon.red { background: var(--danger-dim); color: var(--danger); }
+
+.stat-trend { font-family: 'DM Mono', monospace; font-size: 11px; padding: 3px 8px; border-radius: 20px; }
+.stat-trend.up { background: var(--success-dim); color: var(--success); }
+.stat-trend.down { background: var(--danger-dim); color: var(--danger); }
+.stat-trend.neutral { background: var(--border2); color: var(--muted); }
+
+.stat-value { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 700; color: var(--text); line-height: 1; margin-bottom: 4px; }
+.stat-label { font-size: 12px; color: var(--muted); }
+
+/* ===== SECTION HEADER ===== */
+.section-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.section-title { display: flex; align-items: center; gap: 10px; }
+.section-title h2 { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; color: var(--text); }
+.section-title .count { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); background: var(--surface3); padding: 3px 10px; border-radius: 20px; border: 1px solid var(--border2); }
+
+/* ===== SEARCH & FILTERS ===== */
+.toolbar {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.search-box {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 8px 14px;
+  flex: 1; min-width: 200px;
+  transition: border-color .18s;
+}
+
+.search-box:focus-within { border-color: var(--gold-line); }
+.search-box svg { width: 14px; height: 14px; color: var(--muted); flex-shrink: 0; }
+.search-box input { background: none; border: none; outline: none; color: var(--text); font-family: 'Outfit', sans-serif; font-size: 13px; flex: 1; min-width: 0; }
+.search-box input::placeholder { color: var(--muted); }
+
+.filter-select {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 8px 14px;
+  color: var(--text2);
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  outline: none;
+  cursor: pointer;
+  transition: border-color .18s;
+}
+
+.filter-select:focus { border-color: var(--gold-line); }
+
+/* ===== BUTTONS ===== */
+.btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .18s;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.btn svg { width: 14px; height: 14px; }
+
+.btn-gold {
+  background: linear-gradient(160deg, #f1d27a, #d4af37, #8c6a1f);
+  color: #050607;
+  font-weight: 600;
+  box-shadow: 0 4px 16px rgba(212,175,55,.2);
+}
+
+.btn-gold:hover { box-shadow: 0 6px 24px rgba(212,175,55,.35); transform: translateY(-1px); }
+
+.btn-outline {
+  background: transparent;
+  border-color: var(--border2);
+  color: var(--text2);
+}
+
+.btn-outline:hover { border-color: var(--gold-line); color: var(--gold-light); background: var(--gold-dim); }
+
+.btn-danger {
+  background: var(--danger-dim);
+  border-color: rgba(224,92,92,.25);
+  color: var(--danger);
+}
+
+.btn-danger:hover { background: rgba(224,92,92,.2); border-color: var(--danger); }
+
+.btn-success {
+  background: var(--success-dim);
+  border-color: rgba(76,175,130,.25);
+  color: var(--success);
+}
+
+.btn-sm { padding: 5px 10px; font-size: 12px; }
+
+/* ===== TABLE ===== */
+.table-wrap {
+  background: linear-gradient(145deg, rgba(255,255,255,.02), rgba(255,255,255,.005));
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+table { width: 100%; border-collapse: collapse; }
+
+thead tr {
+  background: rgba(255,255,255,.03);
+  border-bottom: 1px solid var(--border2);
+}
+
+thead th {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 11px;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background .15s;
+}
+
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: rgba(212,175,55,.03); }
+
+tbody td {
+  padding: 13px 16px;
+  font-size: 13.5px;
+  color: var(--text2);
+  vertical-align: middle;
+}
+
+.td-primary { color: var(--text); font-weight: 500; }
+.td-mono { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted); }
+
+/* ===== BADGES ===== */
+.badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11.5px;
+  font-weight: 500;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.badge-gold { background: var(--gold-dim); color: var(--gold-light); border-color: var(--gold-line); }
+.badge-gold::before { background: var(--gold); box-shadow: 0 0 6px var(--gold-glow); }
+.badge-green { background: var(--success-dim); color: var(--success); border-color: rgba(76,175,130,.2); }
+.badge-green::before { background: var(--success); }
+.badge-red { background: var(--danger-dim); color: var(--danger); border-color: rgba(224,92,92,.2); }
+.badge-red::before { background: var(--danger); }
+.badge-blue { background: var(--info-dim); color: var(--info); border-color: rgba(92,158,224,.2); }
+.badge-blue::before { background: var(--info); }
+.badge-warning { background: var(--warning-dim); color: var(--warning); border-color: rgba(224,165,80,.2); }
+.badge-warning::before { background: var(--warning); }
+.badge-muted { background: var(--surface3); color: var(--muted); border-color: var(--border2); }
+.badge-muted::before { background: var(--muted); }
+
+/* ===== ACTION BUTTONS ===== */
+.action-group { display: flex; align-items: center; gap: 5px; }
+
+.icon-btn {
+  width: 30px; height: 30px;
+  border-radius: 7px;
+  border: 1px solid var(--border2);
+  background: transparent;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: all .15s;
+  color: var(--muted);
+}
+
+.icon-btn svg { width: 13px; height: 13px; }
+.icon-btn:hover { border-color: var(--gold-line); color: var(--gold-light); background: var(--gold-dim); }
+.icon-btn.danger:hover { border-color: var(--danger); color: var(--danger); background: var(--danger-dim); }
+
+/* ===== MODAL ===== */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.75);
+  backdrop-filter: blur(6px);
+  z-index: 100;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity .2s;
+}
+
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+
+.modal {
+  background: linear-gradient(145deg, #111419, #0b0d10);
+  border: 1px solid var(--border2);
+  border-radius: 16px;
+  box-shadow: var(--shadow-lg), 0 0 60px rgba(212,175,55,.08);
+  width: 520px;
+  max-width: 95vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  transform: translateY(20px) scale(.97);
+  transition: transform .25s cubic-bezier(.34,1.56,.64,1);
+}
+
+.modal-overlay.open .modal { transform: none; }
+
+.modal-header {
+  padding: 22px 24px 18px;
+  border-bottom: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+.modal-header h3 { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; color: var(--text); }
+.modal-header p { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+.modal-close {
+  width: 32px; height: 32px;
+  background: var(--surface3);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  color: var(--muted);
+  transition: all .15s;
+  font-size: 16px;
+}
+
+.modal-close:hover { border-color: var(--border3); color: var(--text); }
+
+.modal-body { padding: 22px 24px; }
+.modal-footer { padding: 16px 24px; border-top: 1px solid var(--border2); display: flex; align-items: center; justify-content: flex-end; gap: 10px; }
+
+/* ===== FORM ===== */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-grid.single { grid-template-columns: 1fr; }
+.form-col-2 { grid-column: 1 / -1; }
+
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-label { font-size: 12px; font-family: 'DM Mono', monospace; letter-spacing: .08em; color: var(--muted); text-transform: uppercase; }
+
+.form-input, .form-select, .form-textarea {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 9px 14px;
+  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  font-size: 13.5px;
+  outline: none;
+  transition: border-color .18s;
+  width: 100%;
+}
+
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--gold-line); box-shadow: 0 0 0 3px rgba(212,175,55,.07); }
+.form-input::placeholder { color: var(--muted); }
+.form-textarea { resize: vertical; min-height: 80px; }
+
+/* ===== TOGGLE ===== */
+.toggle-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.toggle-row:last-child { border-bottom: none; }
+.toggle-label { font-size: 13.5px; color: var(--text2); }
+.toggle-desc { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+.toggle {
+  width: 40px; height: 22px;
+  background: var(--surface3);
+  border-radius: 11px;
+  border: 1px solid var(--border2);
+  cursor: pointer;
+  position: relative;
+  transition: all .2s;
+  flex-shrink: 0;
+}
+
+.toggle::after {
+  content: '';
+  position: absolute;
+  left: 2px; top: 2px;
+  width: 16px; height: 16px;
+  background: var(--muted);
+  border-radius: 50%;
+  transition: all .2s;
+}
+
+.toggle.on { background: rgba(212,175,55,.2); border-color: var(--gold-line); }
+.toggle.on::after { left: 20px; background: var(--gold); box-shadow: 0 0 8px var(--gold-glow); }
+
+/* ===== ROLES GRID ===== */
+.roles-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 24px; }
+
+.role-card {
+  background: linear-gradient(145deg, rgba(255,255,255,.025), rgba(255,255,255,.008));
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  padding: 18px;
+  cursor: pointer;
+  transition: all .2s;
+  position: relative;
+}
+
+.role-card:hover { border-color: var(--gold-line); background: var(--gold-dim); transform: translateY(-1px); }
+.role-card.selected { border-color: var(--gold); background: rgba(212,175,55,.1); }
+.role-card.selected::after { content: '✓'; position: absolute; top: 12px; right: 12px; color: var(--gold); font-size: 14px; }
+
+.role-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+.role-icon svg { width: 18px; height: 18px; }
+.role-name { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.role-desc { font-size: 11.5px; color: var(--muted); line-height: 1.4; }
+
+/* ===== PERMISSIONS MATRIX ===== */
+.perm-matrix {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.perm-row {
+  display: grid;
+  grid-template-columns: 180px repeat(4, 1fr);
+  border-bottom: 1px solid var(--border);
+  align-items: center;
+}
+
+.perm-row:last-child { border-bottom: none; }
+.perm-row.header { background: rgba(255,255,255,.03); }
+
+.perm-cell {
+  padding: 10px 14px;
+  font-size: 12.5px;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.perm-cell:first-child { justify-content: flex-start; }
+.perm-cell.header { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: .1em; color: var(--muted); text-transform: uppercase; }
+.perm-module { color: var(--text2); font-size: 12.5px; }
+
+.perm-check {
+  width: 18px; height: 18px;
+  border-radius: 4px;
+  border: 1px solid var(--border2);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .15s;
+  background: var(--surface);
+}
+
+.perm-check.checked { background: var(--gold-dim); border-color: var(--gold-line); color: var(--gold); }
+.perm-check.checked::after { content: '✓'; font-size: 11px; }
+.perm-check:hover { border-color: var(--gold-line); }
+
+/* ===== LOGS ===== */
+.log-filters { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+
+.log-filter-btn {
+  padding: 5px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border2);
+  background: transparent;
+  color: var(--muted);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all .15s;
+  font-family: 'Outfit', sans-serif;
+}
+
+.log-filter-btn:hover { border-color: var(--border3); color: var(--text2); }
+.log-filter-btn.active { background: var(--gold-dim); border-color: var(--gold-line); color: var(--gold-light); }
+
+.log-entry {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  transition: background .15s;
+}
+
+.log-entry:last-child { border-bottom: none; }
+.log-entry:hover { background: rgba(255,255,255,.015); }
+
+.log-icon {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.log-icon svg { width: 14px; height: 14px; }
+.log-icon.create { background: var(--success-dim); color: var(--success); }
+.log-icon.update { background: var(--info-dim); color: var(--info); }
+.log-icon.delete { background: var(--danger-dim); color: var(--danger); }
+.log-icon.auth { background: var(--gold-dim); color: var(--gold); }
+.log-icon.config { background: var(--warning-dim); color: var(--warning); }
+
+.log-content { flex: 1; min-width: 0; }
+.log-action { font-size: 13.5px; color: var(--text); font-weight: 500; margin-bottom: 3px; }
+.log-action span { color: var(--gold-light); }
+.log-meta { font-size: 11.5px; color: var(--muted); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.log-meta .dot { color: var(--border3); }
+.log-time { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); white-space: nowrap; margin-left: auto; padding-left: 14px; }
+
+/* ===== SETTINGS ===== */
+.settings-layout { display: grid; grid-template-columns: 200px 1fr; gap: 20px; }
+.settings-nav { display: flex; flex-direction: column; gap: 2px; }
+
+.settings-nav-item {
+  padding: 9px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13.5px;
+  color: var(--muted);
+  transition: all .15s;
+  border: 1px solid transparent;
+}
+
+.settings-nav-item:hover { background: var(--gold-dim); color: var(--text2); }
+.settings-nav-item.active { background: var(--gold-dim); color: var(--gold-light); border-color: var(--gold-line); font-weight: 500; }
+
+.settings-panel {
+  background: linear-gradient(145deg, rgba(255,255,255,.02), rgba(255,255,255,.005));
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.settings-section { margin-bottom: 28px; }
+.settings-section:last-child { margin-bottom: 0; }
+.settings-section-title { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: .15em; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border2); }
+
+/* ===== DIVIDER ===== */
+.divider { height: 1px; background: var(--border2); margin: 20px 0; }
+
+/* ===== EMPTY STATE ===== */
+.empty-state {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--muted);
+}
+
+.empty-state svg { width: 40px; height: 40px; margin: 0 auto 12px; opacity: .3; display: block; }
+.empty-state p { font-size: 14px; }
+
+/* ===== TOAST ===== */
+#toast-container {
+  position: fixed;
+  bottom: 24px; right: 24px;
+  z-index: 200;
+  display: flex; flex-direction: column; gap: 8px;
+}
+
+.toast {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 18px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  font-size: 13.5px;
+  color: var(--text);
+  min-width: 260px;
+  animation: toastIn .3s ease;
+}
+
+.toast svg { width: 16px; height: 16px; flex-shrink: 0; }
+.toast.success { border-color: rgba(76,175,130,.3); }
+.toast.success svg { color: var(--success); }
+.toast.error { border-color: rgba(224,92,92,.3); }
+.toast.error svg { color: var(--danger); }
+.toast.info svg { color: var(--info); }
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* ===== SUPABASE CONFIG PANEL ===== */
+.supabase-status {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+
+.supabase-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.supabase-dot.connected { background: var(--success); box-shadow: 0 0 8px rgba(76,175,130,.5); }
+.supabase-dot.disconnected { background: var(--danger); }
+.supabase-label { font-size: 13px; color: var(--text2); }
+.supabase-url { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); margin-left: auto; }
+
+/* ===== CONFIRM DIALOG ===== */
+.confirm-modal { width: 400px; }
+.confirm-icon { width: 52px; height: 52px; border-radius: 12px; background: var(--danger-dim); border: 1px solid rgba(224,92,92,.2); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+.confirm-icon svg { width: 24px; height: 24px; color: var(--danger); }
+.confirm-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+.confirm-text { font-size: 13.5px; color: var(--muted); line-height: 1.6; }
+
+/* ===== HAMBURGER BUTTON ===== */
+.hamburger {
+  display: none;
+  width: 38px; height: 38px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  align-items: center; justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all .18s;
+  color: var(--text2);
+}
+.hamburger:hover { border-color: var(--gold-line); color: var(--gold-light); }
+.hamburger svg { width: 18px; height: 18px; }
+
+/* ===== SIDEBAR OVERLAY (mobile) ===== */
+.sidebar-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.6);
+  backdrop-filter: blur(3px);
+  z-index: 49;
+}
+.sidebar-overlay.open { display: block; }
+
+/* ===== BOTTOM NAV (mobile) ===== */
+.bottom-nav {
+  display: none;
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: linear-gradient(180deg, rgba(11,13,16,.97), #050607);
+  border-top: 1px solid var(--gold-line);
+  padding: 8px 0 max(8px, env(safe-area-inset-bottom));
+  z-index: 50;
+  backdrop-filter: blur(20px);
+}
+
+.bottom-nav-inner {
+  display: flex; align-items: center; justify-content: space-around;
+}
+
+.bottom-nav-item {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 6px 12px;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: all .15s;
+  color: var(--muted);
+  font-size: 10px;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+  min-width: 56px;
+}
+
+.bottom-nav-item svg { width: 20px; height: 20px; margin-bottom: 1px; }
+.bottom-nav-item.active { color: var(--gold-light); }
+.bottom-nav-item.active svg { color: var(--gold); }
+
+/* ===== RESPONSIVE — TABLETTE (≤1100px) ===== */
+@media (max-width: 1100px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .roles-grid { grid-template-columns: repeat(2, 1fr); }
+  .perm-row { grid-template-columns: 140px repeat(4, 1fr); }
+  .settings-layout { grid-template-columns: 160px 1fr; }
+}
+
+/* ===== RESPONSIVE — TABLETTE portrait (≤860px) ===== */
+@media (max-width: 860px) {
+  :root { --sidebar-w: 240px; }
+
+  .sidebar {
+    position: fixed; left: 0; top: 0; bottom: 0;
+    z-index: 50;
+    transform: translateX(-100%);
+    transition: transform .28s cubic-bezier(.4,0,.2,1);
+    box-shadow: none;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+    box-shadow: 4px 0 40px rgba(0,0,0,.8);
+  }
+
+  .hamburger { display: flex; }
+
+  .topbar { padding: 0 16px; gap: 10px; }
+  .topbar-title h1 { font-size: 18px; }
+  .topbar-title .breadcrumb { display: none; }
+  .topbar-btn span { display: none; }
+  .topbar-btn { padding: 7px 10px; }
+
+  .content { padding: 16px; }
+
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+  .section-header { flex-wrap: wrap; gap: 10px; }
+  .toolbar { gap: 8px; }
+  .search-box { min-width: 0; }
+
+  .form-grid { grid-template-columns: 1fr; }
+  .form-col-2 { grid-column: 1; }
+
+  .settings-layout { grid-template-columns: 1fr; }
+  .settings-nav {
+    flex-direction: row; flex-wrap: wrap; gap: 6px;
+    margin-bottom: 4px;
+  }
+  .settings-nav-item { padding: 6px 12px; font-size: 12px; }
+
+  .roles-grid { grid-template-columns: repeat(2, 1fr); }
+  .perm-row { grid-template-columns: 120px repeat(4, 1fr); }
+  .perm-cell { padding: 8px 8px; font-size: 11.5px; }
+}
+
+/* ===== RESPONSIVE — MOBILE (≤600px) ===== */
+@media (max-width: 600px) {
+  :root { --topbar-h: 56px; }
+
+  /* Hide sidebar footer user info on mobile — shown in topbar */
+  .sidebar-footer { display: none; }
+
+  .topbar { padding: 0 12px; gap: 8px; }
+  .topbar-title h1 { font-size: 16px; }
+  .topbar-divider { display: none; }
+  .topbar-btn { display: none; }
+
+  .content {
+    padding: 12px 12px 80px; /* space for bottom nav */
+  }
+
+  /* Bottom nav replaces sidebar nav on mobile */
+  .bottom-nav { display: block; }
+
+  .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .stat-card { padding: 14px 14px; }
+  .stat-value { font-size: 26px; }
+  .stat-trend { font-size: 10px; padding: 2px 6px; }
+
+  .section-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .section-header .btn { width: 100%; justify-content: center; }
+
+  .toolbar { flex-direction: column; }
+  .search-box { width: 100%; }
+  .filter-select { width: 100%; }
+
+  /* Table → cards on mobile */
+  .table-wrap table { display: none; }
+  .mobile-cards { display: flex; flex-direction: column; gap: 10px; padding: 12px; }
+  .mobile-card {
+    background: rgba(255,255,255,.02);
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    padding: 14px;
+  }
+  .mobile-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .mobile-card-title { font-size: 14px; font-weight: 600; color: var(--text); }
+  .mobile-card-body { display: flex; flex-direction: column; gap: 6px; }
+  .mobile-card-row { display: flex; align-items: center; justify-content: space-between; font-size: 12.5px; }
+  .mobile-card-label { color: var(--muted); }
+  .mobile-card-value { color: var(--text2); font-family: 'DM Mono', monospace; font-size: 12px; }
+  .mobile-card-actions { display: flex; gap: 8px; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); }
+  .mobile-card-actions .btn { flex: 1; justify-content: center; font-size: 12px; padding: 7px 10px; }
+
+  /* Logs on mobile */
+  .log-entry { padding: 12px 14px; gap: 10px; }
+  .log-time { font-size: 10px; padding-left: 8px; }
+  .log-meta { font-size: 11px; }
+
+  /* Roles grid */
+  .roles-grid { grid-template-columns: 1fr; }
+
+  /* Perm matrix scroll */
+  .perm-matrix { overflow-x: auto; }
+  .perm-row { min-width: 400px; }
+
+  /* Settings nav */
+  .settings-nav { flex-direction: row; overflow-x: auto; flex-wrap: nowrap; padding-bottom: 4px; }
+  .settings-nav-item { white-space: nowrap; flex-shrink: 0; font-size: 12px; padding: 6px 12px; }
+
+  /* Modal full screen on mobile */
+  .modal-overlay { align-items: flex-end; }
+  .modal {
+    width: 100%;
+    max-width: 100%;
+    border-radius: 16px 16px 0 0;
+    max-height: 92vh;
+    transform: translateY(100%);
+  }
+  .modal-overlay.open .modal { transform: translateY(0); }
+
+  .log-filter-btn { font-size: 11px; padding: 4px 10px; }
+  .log-filters { gap: 6px; }
+
+  #toast-container { bottom: 80px; right: 12px; left: 12px; }
+  .toast { min-width: 0; width: 100%; }
+
+  .supabase-url { display: none; }
+  .supabase-status { flex-wrap: wrap; gap: 8px; }
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-emblem">M</div>
+      <div class="logo-text">
+        <div class="brand">Morali West Africa</div>
+        <div class="sub">Portail Admin</div>
+      </div>
+    </div>
+
+    <div class="admin-badge">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Accès Administrateur
+    </div>
+
+    <div class="sidebar-section-label">Administration</div>
+    <div class="nav-item active" onclick="navigate('dashboard', this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Tableau de bord
+    </div>
+    <div class="nav-item" onclick="navigate('users', this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Utilisateurs
+      <span class="nav-badge" id="nb-users">8</span>
+    </div>
+    <div class="nav-item" onclick="navigate('roles', this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+      Rôles & Permissions
+    </div>
+    <div class="nav-item" onclick="navigate('logs', this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      Historique / Logs
+      <span class="nav-badge" id="nb-logs">24</span>
+    </div>
+
+    <div class="sidebar-section-label">Système</div>
+    <div class="nav-item" onclick="navigate('settings', this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a2 2 0 0 0-2.83 0l-.71.71a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.71-.71A2 2 0 0 0 12 2a10 10 0 0 0-9.9 11.1A10 10 0 0 0 12 22a10 10 0 0 0 9.9-8.9 2 2 0 0 0-2-2.1z"/></svg>
+      Paramètres généraux
+    </div>
+    <div class="nav-item" onclick="navigate('supabase', this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+      Connexion Supabase
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="user-profile">
+        <div class="avatar">SA</div>
+        <div class="user-info">
+          <div class="uname">Super Admin</div>
+          <div class="urole">ADMINISTRATEUR</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="hamburger" onclick="toggleSidebar()" id="hamburger-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </div>
+      <div class="topbar-title">
+        <h1 id="page-title">Tableau de bord</h1>
+        <span class="breadcrumb" id="page-breadcrumb">ADMIN › OVERVIEW</span>
+      </div>
+      <div class="topbar-actions">
+        <button class="topbar-btn" onclick="refreshData()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+          <span>Actualiser</span>
+        </button>
+        <div class="topbar-divider"></div>
+        <div class="notification-btn" onclick="showToast('Aucune nouvelle notification', 'info')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <div class="notif-dot"></div>
+        </div>
+      </div>
+    </header>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- ===== DASHBOARD ===== -->
+      <div class="panel active" id="panel-dashboard">
+        <div class="stats-grid">
+          <div class="stat-card gold">
+            <div class="stat-header">
+              <div class="stat-icon gold">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              </div>
+              <span class="stat-trend up">+2 ce mois</span>
+            </div>
+            <div class="stat-value">8</div>
+            <div class="stat-label">Utilisateurs actifs</div>
+          </div>
+          <div class="stat-card blue">
+            <div class="stat-header">
+              <div class="stat-icon blue">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+              </div>
+              <span class="stat-trend neutral">stable</span>
+            </div>
+            <div class="stat-value">5</div>
+            <div class="stat-label">Rôles définis</div>
+          </div>
+          <div class="stat-card green">
+            <div class="stat-header">
+              <div class="stat-icon green">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              </div>
+              <span class="stat-trend up">+8 aujourd'hui</span>
+            </div>
+            <div class="stat-value">24</div>
+            <div class="stat-label">Actions journalières</div>
+          </div>
+          <div class="stat-card red">
+            <div class="stat-header">
+              <div class="stat-icon red">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              </div>
+              <span class="stat-trend down">2 non résolus</span>
+            </div>
+            <div class="stat-value">2</div>
+            <div class="stat-label">Alertes système</div>
+          </div>
+        </div>
+
+        <!-- Recent activity -->
+        <div class="section-header">
+          <div class="section-title">
+            <h2>Activité récente</h2>
+            <span class="count">Aujourd'hui</span>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="navigate('logs', document.querySelector('.nav-item:nth-child(6)'))">Voir tous les logs</button>
+        </div>
+
+        <div class="table-wrap">
+          <div id="dashboard-logs"></div>
+        </div>
+      </div>
+
+      <!-- ===== USERS ===== -->
+      <div class="panel" id="panel-users">
+        <div class="section-header">
+          <div class="section-title">
+            <h2>Gestion des utilisateurs</h2>
+            <span class="count" id="users-count">8 comptes</span>
+          </div>
+          <button class="btn btn-gold" onclick="openModal('modal-user')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nouvel utilisateur
+          </button>
+        </div>
+
+        <div class="toolbar">
+          <div class="search-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Rechercher un utilisateur…" id="user-search" oninput="filterUsers()">
+          </div>
+          <select class="filter-select" id="role-filter" onchange="filterUsers()">
+            <option value="">Tous les rôles</option>
+            <option>Super Admin</option>
+            <option>Administrateur</option>
+            <option>Manager</option>
+            <option>Opérateur</option>
+            <option>Consultant</option>
+          </select>
+          <select class="filter-select" id="status-filter" onchange="filterUsers()">
+            <option value="">Tous les statuts</option>
+            <option>Actif</option>
+            <option>Inactif</option>
+            <option>En attente</option>
+          </select>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Utilisateur</th>
+                <th>Email</th>
+                <th>Rôle</th>
+                <th>Statut</th>
+                <th>Dernière connexion</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="users-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===== ROLES ===== -->
+      <div class="panel" id="panel-roles">
+        <div class="section-header">
+          <div class="section-title">
+            <h2>Rôles & Permissions</h2>
+            <span class="count">5 rôles</span>
+          </div>
+          <button class="btn btn-gold" onclick="openModal('modal-role')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nouveau rôle
+          </button>
+        </div>
+
+        <div class="roles-grid" id="roles-grid"></div>
+
+        <div class="section-header">
+          <div class="section-title">
+            <h2>Matrice des permissions</h2>
+          </div>
+          <select class="filter-select" id="perm-role-select" onchange="renderPermMatrix()">
+            <option>Super Admin</option>
+            <option>Administrateur</option>
+            <option>Manager</option>
+            <option>Opérateur</option>
+            <option>Consultant</option>
+          </select>
+        </div>
+
+        <div class="table-wrap">
+          <div class="perm-matrix" id="perm-matrix"></div>
+        </div>
+      </div>
+
+      <!-- ===== LOGS ===== -->
+      <div class="panel" id="panel-logs">
+        <div class="section-header">
+          <div class="section-title">
+            <h2>Historique d'activité</h2>
+            <span class="count" id="logs-count">24 événements</span>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-outline btn-sm" onclick="exportLogs()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Exporter CSV
+            </button>
+            <button class="btn btn-danger btn-sm" onclick="clearLogs()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+              Purger
+            </button>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <div class="search-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Rechercher dans les logs…" id="log-search" oninput="filterLogs()">
+          </div>
+          <select class="filter-select" id="log-type-filter" onchange="filterLogs()">
+            <option value="">Tous les types</option>
+            <option value="create">Création</option>
+            <option value="update">Modification</option>
+            <option value="delete">Suppression</option>
+            <option value="auth">Authentification</option>
+            <option value="config">Configuration</option>
+          </select>
+        </div>
+
+        <div class="log-filters" id="log-date-filters">
+          <button class="log-filter-btn active" onclick="setLogDateFilter('all', this)">Tout</button>
+          <button class="log-filter-btn" onclick="setLogDateFilter('today', this)">Aujourd'hui</button>
+          <button class="log-filter-btn" onclick="setLogDateFilter('week', this)">Cette semaine</button>
+          <button class="log-filter-btn" onclick="setLogDateFilter('month', this)">Ce mois</button>
+        </div>
+
+        <div class="table-wrap">
+          <div id="logs-list"></div>
+        </div>
+      </div>
+
+      <!-- ===== SETTINGS ===== -->
+      <div class="panel" id="panel-settings">
+        <div class="section-header">
+          <div class="section-title"><h2>Paramètres généraux</h2></div>
+          <button class="btn btn-gold" onclick="saveSettings()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13"/><polyline points="7 3 7 8 15 8"/></svg>
+            Sauvegarder
+          </button>
+        </div>
+
+        <div class="settings-layout">
+          <div class="settings-nav" id="settings-nav">
+            <div class="settings-nav-item active" onclick="switchSettings('application', this)">Application</div>
+            <div class="settings-nav-item" onclick="switchSettings('securite', this)">Sécurité</div>
+            <div class="settings-nav-item" onclick="switchSettings('notifications', this)">Notifications</div>
+            <div class="settings-nav-item" onclick="switchSettings('apparence', this)">Apparence</div>
+          </div>
+
+          <div class="settings-panel" id="settings-panel-content"></div>
+        </div>
+      </div>
+
+      <!-- ===== SUPABASE ===== -->
+      <div class="panel" id="panel-supabase">
+        <div class="section-header">
+          <div class="section-title"><h2>Connexion Supabase</h2></div>
+          <button class="btn btn-gold" onclick="testSupabase()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+            Tester la connexion
+          </button>
+        </div>
+
+        <div class="supabase-status" id="supabase-status">
+          <div class="supabase-dot disconnected" id="sb-dot"></div>
+          <span class="supabase-label" id="sb-label">Non configuré — Entrez vos paramètres ci-dessous</span>
+          <span class="supabase-url" id="sb-url"></span>
+        </div>
+
+        <div class="table-wrap" style="padding:24px;">
+          <div class="form-grid single">
+            <div class="form-group">
+              <label class="form-label">URL du projet Supabase</label>
+              <input type="url" class="form-input" id="sb-project-url" placeholder="https://xxxxxxxxxxxx.supabase.co" value="">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Clé API (anon / public)</label>
+              <input type="password" class="form-input" id="sb-anon-key" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9…">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Clé de service (service_role — facultatif)</label>
+              <input type="password" class="form-input" id="sb-service-key" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9…">
+            </div>
+          </div>
+          <div class="divider"></div>
+          <div style="display:flex;gap:10px;">
+            <button class="btn btn-gold" onclick="saveSupabaseConfig()">Enregistrer la configuration</button>
+            <button class="btn btn-outline" onclick="loadSupabaseConfig()">Charger depuis localStorage</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ===== MODAL : CRÉER/MODIFIER UTILISATEUR ===== -->
+<div class="modal-overlay" id="modal-user">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <h3 id="modal-user-title">Nouvel utilisateur</h3>
+        <p id="modal-user-sub">Créer un compte dans l'application</p>
+      </div>
+      <div class="modal-close" onclick="closeModal('modal-user')">✕</div>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Prénom</label>
+          <input type="text" class="form-input" id="u-prenom" placeholder="ex. Mamadou">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nom</label>
+          <input type="text" class="form-input" id="u-nom" placeholder="ex. Camara">
+        </div>
+        <div class="form-group form-col-2">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-input" id="u-email" placeholder="ex. m.camara@morali.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Rôle</label>
+          <select class="form-select" id="u-role">
+            <option>Sélectionner…</option>
+            <option>Super Admin</option>
+            <option>Administrateur</option>
+            <option>Manager</option>
+            <option>Opérateur</option>
+            <option>Consultant</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Département</label>
+          <select class="form-select" id="u-dept">
+            <option>Sélectionner…</option>
+            <option>Direction</option>
+            <option>Opérations</option>
+            <option>Logistique</option>
+            <option>Finance</option>
+            <option>Technique</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Mot de passe temporaire</label>
+          <input type="password" class="form-input" id="u-pass" placeholder="••••••••">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Statut</label>
+          <select class="form-select" id="u-status">
+            <option>Actif</option>
+            <option>Inactif</option>
+            <option>En attente</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-user')">Annuler</button>
+      <button class="btn btn-gold" onclick="saveUser()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        Enregistrer
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL : CRÉER RÔLE ===== -->
+<div class="modal-overlay" id="modal-role">
+  <div class="modal">
+    <div class="modal-header">
+      <div><h3>Nouveau rôle</h3><p>Définir un rôle personnalisé</p></div>
+      <div class="modal-close" onclick="closeModal('modal-role')">✕</div>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid single">
+        <div class="form-group">
+          <label class="form-label">Nom du rôle</label>
+          <input type="text" class="form-input" id="r-name" placeholder="ex. Superviseur Stock">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <textarea class="form-textarea" id="r-desc" placeholder="Décrire les responsabilités de ce rôle…"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Rôle parent (héritage)</label>
+          <select class="form-select" id="r-parent">
+            <option value="">Aucun (rôle de base)</option>
+            <option>Opérateur</option>
+            <option>Manager</option>
+            <option>Administrateur</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-role')">Annuler</button>
+      <button class="btn btn-gold" onclick="saveRole()">Créer le rôle</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL : CONFIRMER SUPPRESSION ===== -->
+<div class="modal-overlay" id="modal-confirm">
+  <div class="modal confirm-modal">
+    <div class="modal-body" style="padding:28px 24px;">
+      <div class="confirm-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>
+      </div>
+      <div class="confirm-title" id="confirm-title">Supprimer l'utilisateur ?</div>
+      <div class="confirm-text" id="confirm-text">Cette action est irréversible. L'utilisateur sera définitivement supprimé de Supabase et toutes ses données seront perdues.</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-confirm')">Annuler</button>
+      <button class="btn btn-danger" id="confirm-ok-btn">Supprimer définitivement</button>
+    </div>
+  </div>
+</div>
+
+<!-- SIDEBAR OVERLAY (mobile) -->
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+<!-- BOTTOM NAV (mobile ≤600px) -->
+<nav class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <div class="bottom-nav-item active" id="bn-dashboard" onclick="navigateMobile('dashboard')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </div>
+    <div class="bottom-nav-item" id="bn-users" onclick="navigateMobile('users')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Comptes
+    </div>
+    <div class="bottom-nav-item" id="bn-roles" onclick="navigateMobile('roles')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+      Rôles
+    </div>
+    <div class="bottom-nav-item" id="bn-logs" onclick="navigateMobile('logs')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Logs
+    </div>
+    <div class="bottom-nav-item" id="bn-settings" onclick="navigateMobile('settings')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a2 2 0 0 0-2.83 0l-.71.71a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.71-.71A2 2 0 0 0 12 2a10 10 0 0 0-9.9 11.1A10 10 0 0 0 12 22a10 10 0 0 0 9.9-8.9 2 2 0 0 0-2-2.1z"/></svg>
+      Config
+    </div>
+  </div>
+</nav>
+
+<!-- TOAST CONTAINER -->
+<div id="toast-container"></div>
+
+<script>
+// ===== DATA =====
+let users = [
+  { id:1, prenom:'Ibrahima', nom:'Diallo', email:'i.diallo@morali.gn', role:'Super Admin', dept:'Direction', statut:'Actif', lastLogin:'2025-01-14 08:32', avatar:'ID' },
+  { id:2, prenom:'Fatoumata', nom:'Kouyaté', email:'f.kouyate@morali.gn', role:'Administrateur', dept:'Direction', statut:'Actif', lastLogin:'2025-01-14 07:15', avatar:'FK' },
+  { id:3, prenom:'Mamadou', nom:'Bah', email:'m.bah@morali.gn', role:'Manager', dept:'Opérations', statut:'Actif', lastLogin:'2025-01-13 16:44', avatar:'MB' },
+  { id:4, prenom:'Aissatou', nom:'Sylla', email:'a.sylla@morali.gn', role:'Manager', dept:'Logistique', statut:'Actif', lastLogin:'2025-01-13 11:20', avatar:'AS' },
+  { id:5, prenom:'Oumar', nom:'Traoré', email:'o.traore@morali.gn', role:'Opérateur', dept:'Technique', statut:'Actif', lastLogin:'2025-01-12 09:05', avatar:'OT' },
+  { id:6, prenom:'Mariama', nom:'Camara', email:'m.camara@morali.gn', role:'Opérateur', dept:'Finance', statut:'Actif', lastLogin:'2025-01-11 14:30', avatar:'MC' },
+  { id:7, prenom:'Sekou', nom:'Doumbouya', email:'s.doumbouya@morali.gn', role:'Consultant', dept:'Technique', statut:'En attente', lastLogin:'Jamais', avatar:'SD' },
+  { id:8, prenom:'Kadiatou', nom:'Barry', email:'k.barry@morali.gn', role:'Opérateur', dept:'Opérations', statut:'Inactif', lastLogin:'2024-12-20 10:00', avatar:'KB' },
+];
+
+let roles = [
+  { name:'Super Admin', desc:'Accès complet à tous les modules, configuration système.', users:1, color:'gold', icon:'shield' },
+  { name:'Administrateur', desc:'Gestion utilisateurs, paramètres, sans accès config réseau.', users:1, color:'blue', icon:'star' },
+  { name:'Manager', desc:'Supervision des opérations et rapports métier.', users:2, color:'warning', icon:'briefcase' },
+  { name:'Opérateur', desc:'Saisie et consultation des données opérationnelles.', users:3, color:'green', icon:'user' },
+  { name:'Consultant', desc:'Lecture seule — accès aux rapports et analyses.', users:1, color:'muted', icon:'eye' },
+];
+
+let logs = [
+  { id:1, type:'auth', action:'Connexion réussie', user:'Ibrahima Diallo', detail:'IP: 196.168.1.24 — Siguiri', time:'14/01 08:32' },
+  { id:2, type:'create', action:'Utilisateur créé', user:'Fatoumata Kouyaté', detail:'Nouveau compte : Sekou Doumbouya (Consultant)', time:'14/01 08:15' },
+  { id:3, type:'auth', action:'Connexion réussie', user:'Fatoumata Kouyaté', detail:'IP: 196.168.1.18 — Conakry', time:'14/01 07:15' },
+  { id:4, type:'update', action:'Rôle modifié', user:'Ibrahima Diallo', detail:'Mamadou Bah : Opérateur → Manager', time:'13/01 17:00' },
+  { id:5, type:'config', action:'Paramètres sauvegardés', user:'Ibrahima Diallo', detail:'Nom application, fuseau horaire mis à jour', time:'13/01 16:55' },
+  { id:6, type:'auth', action:'Connexion réussie', user:'Mamadou Bah', detail:'IP: 196.168.1.31 — Siguiri', time:'13/01 16:44' },
+  { id:7, type:'update', action:'Profil mis à jour', user:'Aissatou Sylla', detail:'Email modifié — a.sylla@morali.gn', time:'13/01 11:20' },
+  { id:8, type:'delete', action:'Session terminée', user:'Kadiatou Barry', detail:'Déconnexion forcée par admin', time:'12/01 14:00' },
+  { id:9, type:'config', action:'Connexion Supabase', user:'Ibrahima Diallo', detail:'URL projet configurée et testée', time:'12/01 09:30' },
+  { id:10, type:'create', action:'Rôle créé', user:'Ibrahima Diallo', detail:'Nouveau rôle : Consultant', time:'11/01 10:00' },
+  { id:11, type:'auth', action:'Tentative échouée', user:'Inconnu', detail:'Échec: k.barry@morali.gn — 3 tentatives', time:'10/01 22:10' },
+  { id:12, type:'update', action:'Permissions modifiées', user:'Fatoumata Kouyaté', detail:'Manager : accès Finance activé', time:'10/01 15:30' },
+];
+
+let settingsData = {
+  application: { nom: 'Morali West Africa Ltd', version: '1.0.0', timezone: 'Africa/Conakry', langue: 'fr', devise: 'GNF' },
+  securite: { mfaObligatoire: false, sessionTimeout: 60, tentativesMax: 5, logsConnexion: true },
+  notifications: { emailAlertes: true, notifCreation: true, notifSuppression: true, resumeQuotidien: false },
+  apparence: { theme: 'obsidienne', logoUrl: '', compactMode: false }
+};
+
+let editingUserId = null;
+let currentSettingsSection = 'application';
+let logDateFilter = 'all';
+let confirmCallback = null;
+
+// ===== NAVIGATION =====
+function navigate(section, el) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (el) el.classList.add('active');
+
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + section).classList.add('active');
+
+  // Sync bottom nav
+  document.querySelectorAll('.bottom-nav-item').forEach(b => b.classList.remove('active'));
+  const bnEl = document.getElementById('bn-' + section);
+  if (bnEl) bnEl.classList.add('active');
+
+  const titles = {
+    dashboard: ['Tableau de bord', 'ADMIN › OVERVIEW'],
+    users: ['Utilisateurs', 'ADMIN › GESTION DES COMPTES'],
+    roles: ['Rôles & Permissions', 'ADMIN › ACCÈS SYSTÈME'],
+    logs: ['Historique / Logs', 'ADMIN › AUDIT TRAIL'],
+    settings: ['Paramètres généraux', 'ADMIN › CONFIGURATION'],
+    supabase: ['Connexion Supabase', 'ADMIN › BASE DE DONNÉES'],
+  };
+
+  document.getElementById('page-title').textContent = titles[section][0];
+  document.getElementById('page-breadcrumb').textContent = titles[section][1];
+
+  if (section === 'users') renderUsers();
+  if (section === 'roles') { renderRoles(); renderPermMatrix(); }
+  if (section === 'logs') renderLogs();
+  if (section === 'settings') renderSettings();
+  if (section === 'supabase') loadSupabaseConfig();
+
+  closeSidebar();
+}
+
+// ===== RENDER DASHBOARD =====
+function renderDashboard() {
+  const container = document.getElementById('dashboard-logs');
+  const recent = logs.slice(0, 5);
+  container.innerHTML = recent.map(l => logEntryHTML(l)).join('');
+}
+
+// ===== RENDER USERS =====
+function renderUsers(filter = '') {
+  const search = (document.getElementById('user-search')?.value || '').toLowerCase();
+  const roleF = document.getElementById('role-filter')?.value || '';
+  const statF = document.getElementById('status-filter')?.value || '';
+
+  let filtered = users.filter(u => {
+    const name = (u.prenom + ' ' + u.nom + ' ' + u.email).toLowerCase();
+    const matchSearch = !search || name.includes(search);
+    const matchRole = !roleF || u.role === roleF;
+    const matchStat = !statF || u.statut === statF;
+    return matchSearch && matchRole && matchStat;
+  });
+
+  document.getElementById('users-count').textContent = filtered.length + ' compte' + (filtered.length > 1 ? 's' : '');
+
+  const tbody = document.getElementById('users-table-body');
+  if (!filtered.length) {
+    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><p>Aucun utilisateur trouvé</p></div></td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(u => `
+    <tr>
+      <td>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="avatar" style="width:32px;height:32px;font-size:12px;">${u.avatar}</div>
+          <div>
+            <div class="td-primary">${u.prenom} ${u.nom}</div>
+            <div class="td-mono">${u.dept}</div>
+          </div>
+        </div>
+      </td>
+      <td class="td-mono">${u.email}</td>
+      <td>${roleBadge(u.role)}</td>
+      <td>${statusBadge(u.statut)}</td>
+      <td class="td-mono">${u.lastLogin}</td>
+      <td>
+        <div class="action-group">
+          <button class="icon-btn" title="Modifier" onclick="editUser(${u.id})">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </button>
+          <button class="icon-btn" title="${u.statut==='Actif'?'Désactiver':'Activer'}" onclick="toggleUserStatus(${u.id})">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/>${u.statut==='Actif'?'<line x1="8" y1="12" x2="16" y2="12"/>':'<line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>'}</svg>
+          </button>
+          <button class="icon-btn danger" title="Supprimer" onclick="deleteUser(${u.id})">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>
+          </button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+
+  // Mobile cards
+  let mobileEl = document.getElementById('users-mobile-cards');
+  if (!mobileEl) {
+    mobileEl = document.createElement('div');
+    mobileEl.id = 'users-mobile-cards';
+    mobileEl.className = 'mobile-cards';
+    document.querySelector('.table-wrap').appendChild(mobileEl);
+  }
+  mobileEl.innerHTML = filtered.map(u => `
+    <div class="mobile-card">
+      <div class="mobile-card-header">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="avatar" style="width:36px;height:36px;">${u.avatar}</div>
+          <div>
+            <div class="mobile-card-title">${u.prenom} ${u.nom}</div>
+            <div style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;">${u.dept}</div>
+          </div>
+        </div>
+        ${statusBadge(u.statut)}
+      </div>
+      <div class="mobile-card-body">
+        <div class="mobile-card-row">
+          <span class="mobile-card-label">Email</span>
+          <span class="mobile-card-value">${u.email}</span>
+        </div>
+        <div class="mobile-card-row">
+          <span class="mobile-card-label">Rôle</span>
+          <span>${roleBadge(u.role)}</span>
+        </div>
+        <div class="mobile-card-row">
+          <span class="mobile-card-label">Connexion</span>
+          <span class="mobile-card-value">${u.lastLogin}</span>
+        </div>
+      </div>
+      <div class="mobile-card-actions">
+        <button class="btn btn-outline btn-sm" onclick="editUser(${u.id})">Modifier</button>
+        <button class="btn btn-outline btn-sm" onclick="toggleUserStatus(${u.id})">${u.statut==='Actif'?'Désactiver':'Activer'}</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteUser(${u.id})">Supprimer</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterUsers() { renderUsers(); }
+
+function roleBadge(role) {
+  const map = { 'Super Admin':'gold', 'Administrateur':'blue', 'Manager':'warning', 'Opérateur':'green', 'Consultant':'muted' };
+  return `<span class="badge badge-${map[role]||'muted'}">${role}</span>`;
+}
+
+function statusBadge(s) {
+  const map = { 'Actif':'green', 'Inactif':'red', 'En attente':'warning' };
+  return `<span class="badge badge-${map[s]||'muted'}">${s}</span>`;
+}
+
+// ===== USERS CRUD =====
+function editUser(id) {
+  const u = users.find(x => x.id === id);
+  if (!u) return;
+  editingUserId = id;
+  document.getElementById('modal-user-title').textContent = 'Modifier l\'utilisateur';
+  document.getElementById('modal-user-sub').textContent = u.prenom + ' ' + u.nom;
+  document.getElementById('u-prenom').value = u.prenom;
+  document.getElementById('u-nom').value = u.nom;
+  document.getElementById('u-email').value = u.email;
+  document.getElementById('u-role').value = u.role;
+  document.getElementById('u-dept').value = u.dept;
+  document.getElementById('u-status').value = u.statut;
+  openModal('modal-user');
+}
+
+function saveUser() {
+  const prenom = document.getElementById('u-prenom').value.trim();
+  const nom = document.getElementById('u-nom').value.trim();
+  const email = document.getElementById('u-email').value.trim();
+  const role = document.getElementById('u-role').value;
+  const dept = document.getElementById('u-dept').value;
+  const statut = document.getElementById('u-status').value;
+
+  if (!prenom || !nom || !email || role === 'Sélectionner…' || dept === 'Sélectionner…') {
+    showToast('Veuillez remplir tous les champs obligatoires', 'error'); return;
+  }
+
+  if (editingUserId) {
+    const u = users.find(x => x.id === editingUserId);
+    Object.assign(u, { prenom, nom, email, role, dept, statut });
+    addLog('update', 'Utilisateur modifié', 'Super Admin', `${prenom} ${nom} mis à jour`);
+    showToast('Utilisateur modifié avec succès', 'success');
+  } else {
+    const id = Math.max(...users.map(x => x.id)) + 1;
+    users.push({ id, prenom, nom, email, role, dept, statut, lastLogin:'Jamais', avatar: (prenom[0]+nom[0]).toUpperCase() });
+    addLog('create', 'Utilisateur créé', 'Super Admin', `Nouveau compte : ${prenom} ${nom} (${role})`);
+    showToast('Utilisateur créé avec succès', 'success');
+  }
+
+  document.getElementById('nb-users').textContent = users.filter(u => u.statut === 'Actif').length;
+  closeModal('modal-user');
+  renderUsers();
+  editingUserId = null;
+
+  // Reset form
+  ['u-prenom','u-nom','u-email','u-pass'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('modal-user-title').textContent = 'Nouvel utilisateur';
+  document.getElementById('modal-user-sub').textContent = 'Créer un compte dans l\'application';
+}
+
+function toggleUserStatus(id) {
+  const u = users.find(x => x.id === id);
+  if (!u) return;
+  const old = u.statut;
+  u.statut = u.statut === 'Actif' ? 'Inactif' : 'Actif';
+  addLog('update', 'Statut modifié', 'Super Admin', `${u.prenom} ${u.nom} : ${old} → ${u.statut}`);
+  showToast(`${u.prenom} ${u.nom} : ${u.statut}`, 'success');
+  renderUsers();
+}
+
+function deleteUser(id) {
+  const u = users.find(x => x.id === id);
+  document.getElementById('confirm-title').textContent = `Supprimer ${u.prenom} ${u.nom} ?`;
+  document.getElementById('confirm-text').textContent = `Cette action est irréversible. Le compte de ${u.prenom} ${u.nom} (${u.email}) sera définitivement supprimé.`;
+  confirmCallback = () => {
+    users = users.filter(x => x.id !== id);
+    addLog('delete', 'Utilisateur supprimé', 'Super Admin', `${u.prenom} ${u.nom} supprimé`);
+    showToast('Utilisateur supprimé', 'success');
+    renderUsers();
+    closeModal('modal-confirm');
+  };
+  document.getElementById('confirm-ok-btn').onclick = confirmCallback;
+  openModal('modal-confirm');
+}
+
+// ===== ROLES =====
+function renderRoles() {
+  const grid = document.getElementById('roles-grid');
+  const icons = {
+    shield: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+    star: '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
+    briefcase: '<rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
+    user: '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+    eye: '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>',
+  };
+
+  grid.innerHTML = roles.map(r => `
+    <div class="role-card" onclick="selectRole('${r.name}')">
+      <div class="role-icon ${r.color}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${icons[r.icon]}</svg>
+      </div>
+      <div class="role-name">${r.name}</div>
+      <div class="role-desc">${r.desc}</div>
+      <div style="margin-top:10px;display:flex;align-items:center;justify-content:space-between;">
+        <span class="badge badge-${r.color}">${r.users} utilisateur${r.users > 1?'s':''}</span>
+        <button class="icon-btn btn-sm" title="Modifier" onclick="event.stopPropagation()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function selectRole(name) {
+  document.getElementById('perm-role-select').value = name;
+  renderPermMatrix();
+}
+
+function saveRole() {
+  const name = document.getElementById('r-name').value.trim();
+  const desc = document.getElementById('r-desc').value.trim();
+  if (!name) { showToast('Entrez un nom de rôle', 'error'); return; }
+  roles.push({ name, desc: desc || 'Rôle personnalisé', users: 0, color: 'muted', icon: 'user' });
+  addLog('create', 'Rôle créé', 'Super Admin', `Nouveau rôle : ${name}`);
+  showToast('Rôle créé avec succès', 'success');
+  closeModal('modal-role');
+  renderRoles();
+}
+
+const modules = ['Stock / Inventaire','Fournisseurs','Commandes','Transferts','Rapports','Utilisateurs','Paramètres'];
+const permPresets = {
+  'Super Admin': [1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1],
+  'Administrateur': [1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,0, 1,1,0,0],
+  'Manager': [1,1,1,1, 1,1,1,0, 1,1,1,0, 1,1,1,0, 1,1,1,0, 0,0,0,0, 0,0,0,0],
+  'Opérateur': [1,1,0,0, 1,0,0,0, 1,1,0,0, 1,1,0,0, 1,0,0,0, 0,0,0,0, 0,0,0,0],
+  'Consultant': [1,0,0,0, 1,0,0,0, 1,0,0,0, 1,0,0,0, 1,0,0,0, 0,0,0,0, 0,0,0,0],
+};
+
+function renderPermMatrix() {
+  const role = document.getElementById('perm-role-select').value;
+  const perms = permPresets[role] || new Array(28).fill(0);
+  const matrix = document.getElementById('perm-matrix');
+
+  matrix.innerHTML = `
+    <div class="perm-row">
+      <div class="perm-cell header">Module</div>
+      <div class="perm-cell header">Lire</div>
+      <div class="perm-cell header">Créer</div>
+      <div class="perm-cell header">Modifier</div>
+      <div class="perm-cell header">Supprimer</div>
+    </div>
+    ${modules.map((mod, i) => `
+      <div class="perm-row">
+        <div class="perm-cell"><span class="perm-module">${mod}</span></div>
+        ${[0,1,2,3].map(j => {
+          const idx = i * 4 + j;
+          return `<div class="perm-cell"><div class="perm-check ${perms[idx]?'checked':''}" onclick="togglePerm(${idx},'${role}')"></div></div>`;
+        }).join('')}
+      </div>
+    `).join('')}
+  `;
+}
+
+function togglePerm(idx, role) {
+  if (!permPresets[role]) permPresets[role] = new Array(28).fill(0);
+  permPresets[role][idx] = permPresets[role][idx] ? 0 : 1;
+  renderPermMatrix();
+  showToast('Permission mise à jour', 'success');
+}
+
+// ===== LOGS =====
+function logEntryHTML(l) {
+  const icons = {
+    create: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
+    update: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',
+    delete: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>',
+    auth: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>',
+    config: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a2 2 0 0 0-2.83 0l-.71.71a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.71-.71A2 2 0 0 0 12 2a10 10 0 0 0-9.9 11.1A10 10 0 0 0 12 22a10 10 0 0 0 9.9-8.9 2 2 0 0 0-2-2.1z"/></svg>',
+  };
+
+  return `
+    <div class="log-entry">
+      <div class="log-icon ${l.type}">${icons[l.type]||icons.config}</div>
+      <div class="log-content">
+        <div class="log-action">${l.action} — <span>${l.user}</span></div>
+        <div class="log-meta">${l.detail}</div>
+      </div>
+      <div class="log-time">${l.time}</div>
+    </div>
+  `;
+}
+
+function renderLogs() {
+  const search = (document.getElementById('log-search')?.value || '').toLowerCase();
+  const typeF = document.getElementById('log-type-filter')?.value || '';
+
+  let filtered = logs.filter(l => {
+    const text = (l.action + ' ' + l.user + ' ' + l.detail).toLowerCase();
+    const matchSearch = !search || text.includes(search);
+    const matchType = !typeF || l.type === typeF;
+    return matchSearch && matchType;
+  });
+
+  document.getElementById('logs-count').textContent = filtered.length + ' événement' + (filtered.length > 1 ? 's' : '');
+
+  const container = document.getElementById('logs-list');
+  if (!filtered.length) {
+    container.innerHTML = '<div class="empty-state"><p>Aucun log trouvé</p></div>';
+    return;
+  }
+  container.innerHTML = filtered.map(l => logEntryHTML(l)).join('');
+}
+
+function filterLogs() { renderLogs(); }
+
+function setLogDateFilter(f, el) {
+  logDateFilter = f;
+  document.querySelectorAll('.log-filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderLogs();
+}
+
+function addLog(type, action, user, detail) {
+  const now = new Date();
+  const time = now.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'}) + ' ' + now.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+  logs.unshift({ id: Date.now(), type, action, user, detail, time });
+  document.getElementById('nb-logs').textContent = logs.length;
+}
+
+function exportLogs() {
+  const rows = ['Type,Action,Utilisateur,Détail,Heure', ...logs.map(l => `${l.type},"${l.action}","${l.user}","${l.detail}","${l.time}"`)];
+  const blob = new Blob(['\uFEFF' + rows.join('\n')], { type:'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'morali_logs.csv'; a.click();
+  showToast('Logs exportés en CSV', 'success');
+}
+
+function clearLogs() {
+  confirmCallback = () => {
+    logs = [];
+    addLog('config','Logs purgés','Super Admin','Historique effacé par l\'administrateur');
+    renderLogs();
+    closeModal('modal-confirm');
+    showToast('Historique purgé', 'success');
+  };
+  document.getElementById('confirm-title').textContent = 'Purger tous les logs ?';
+  document.getElementById('confirm-text').textContent = 'L\'intégralité de l\'historique d\'activité sera supprimée définitivement. Cette action est irréversible.';
+  document.getElementById('confirm-ok-btn').textContent = 'Purger définitivement';
+  document.getElementById('confirm-ok-btn').onclick = confirmCallback;
+  openModal('modal-confirm');
+}
+
+// ===== SETTINGS =====
+const settingsPanels = {
+  application: () => `
+    <div class="settings-section">
+      <div class="settings-section-title">Informations générales</div>
+      <div class="form-grid">
+        <div class="form-group form-col-2">
+          <label class="form-label">Nom de l'application</label>
+          <input type="text" class="form-input" value="${settingsData.application.nom}" id="s-nom">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Version</label>
+          <input type="text" class="form-input" value="${settingsData.application.version}" id="s-version">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Fuseau horaire</label>
+          <select class="form-select" id="s-tz">
+            <option ${settingsData.application.timezone==='Africa/Conakry'?'selected':''}>Africa/Conakry</option>
+            <option ${settingsData.application.timezone==='Africa/Dakar'?'selected':''}>Africa/Dakar</option>
+            <option ${settingsData.application.timezone==='Europe/Paris'?'selected':''}>Europe/Paris</option>
+            <option ${settingsData.application.timezone==='UTC'?'selected':''}>UTC</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Langue</label>
+          <select class="form-select" id="s-lang">
+            <option value="fr" ${settingsData.application.langue==='fr'?'selected':''}>Français</option>
+            <option value="en" ${settingsData.application.langue==='en'?'selected':''}>English</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Devise</label>
+          <select class="form-select" id="s-devise">
+            <option value="GNF" ${settingsData.application.devise==='GNF'?'selected':''}>GNF — Franc guinéen</option>
+            <option value="USD" ${settingsData.application.devise==='USD'?'selected':''}>USD — Dollar américain</option>
+            <option value="EUR" ${settingsData.application.devise==='EUR'?'selected':''}>EUR — Euro</option>
+          </select>
+        </div>
+      </div>
+    </div>`,
+  securite: () => `
+    <div class="settings-section">
+      <div class="settings-section-title">Politique de sécurité</div>
+      <div class="toggle-row"><div><div class="toggle-label">Authentification à deux facteurs obligatoire</div><div class="toggle-desc">Tous les utilisateurs devront valider via email</div></div><div class="toggle ${settingsData.securite.mfaObligatoire?'on':''}" onclick="toggleSetting(this,'securite','mfaObligatoire')"></div></div>
+      <div class="toggle-row"><div><div class="toggle-label">Journalisation des connexions</div><div class="toggle-desc">Enregistrer chaque tentative d'authentification</div></div><div class="toggle ${settingsData.securite.logsConnexion?'on':''}" onclick="toggleSetting(this,'securite','logsConnexion')"></div></div>
+      <div class="divider"></div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Timeout de session (minutes)</label>
+          <input type="number" class="form-input" value="${settingsData.securite.sessionTimeout}" id="s-timeout" min="5" max="480">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tentatives max avant blocage</label>
+          <input type="number" class="form-input" value="${settingsData.securite.tentativesMax}" id="s-tentatives" min="1" max="20">
+        </div>
+      </div>
+    </div>`,
+  notifications: () => `
+    <div class="settings-section">
+      <div class="settings-section-title">Notifications administrateur</div>
+      <div class="toggle-row"><div><div class="toggle-label">Alertes par email</div><div class="toggle-desc">Recevoir les alertes critiques par email</div></div><div class="toggle ${settingsData.notifications.emailAlertes?'on':''}" onclick="toggleSetting(this,'notifications','emailAlertes')"></div></div>
+      <div class="toggle-row"><div><div class="toggle-label">Notification à la création d'un compte</div><div class="toggle-desc">Email envoyé lors de l'ajout d'un nouvel utilisateur</div></div><div class="toggle ${settingsData.notifications.notifCreation?'on':''}" onclick="toggleSetting(this,'notifications','notifCreation')"></div></div>
+      <div class="toggle-row"><div><div class="toggle-label">Notification à la suppression</div><div class="toggle-desc">Email envoyé lorsqu'un compte est supprimé</div></div><div class="toggle ${settingsData.notifications.notifSuppression?'on':''}" onclick="toggleSetting(this,'notifications','notifSuppression')"></div></div>
+      <div class="toggle-row"><div><div class="toggle-label">Résumé quotidien</div><div class="toggle-desc">Rapport journalier des activités du système</div></div><div class="toggle ${settingsData.notifications.resumeQuotidien?'on':''}" onclick="toggleSetting(this,'notifications','resumeQuotidien')"></div></div>
+    </div>`,
+  apparence: () => `
+    <div class="settings-section">
+      <div class="settings-section-title">Interface</div>
+      <div class="toggle-row"><div><div class="toggle-label">Mode compact</div><div class="toggle-desc">Réduire l'espacement pour afficher plus de données</div></div><div class="toggle ${settingsData.apparence.compactMode?'on':''}" onclick="toggleSetting(this,'apparence','compactMode')"></div></div>
+      <div class="divider"></div>
+      <div class="form-group">
+        <label class="form-label">URL du logo (optionnel)</label>
+        <input type="url" class="form-input" value="${settingsData.apparence.logoUrl}" id="s-logo" placeholder="https://…">
+      </div>
+    </div>`,
+};
+
+function renderSettings() {
+  document.getElementById('settings-panel-content').innerHTML = settingsPanels[currentSettingsSection]();
+}
+
+function switchSettings(section, el) {
+  currentSettingsSection = section;
+  document.querySelectorAll('.settings-nav-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+  renderSettings();
+}
+
+function toggleSetting(el, section, key) {
+  settingsData[section][key] = !settingsData[section][key];
+  el.classList.toggle('on');
+}
+
+function saveSettings() {
+  // Collect values based on current section
+  if (currentSettingsSection === 'application') {
+    settingsData.application.nom = document.getElementById('s-nom')?.value || settingsData.application.nom;
+    settingsData.application.version = document.getElementById('s-version')?.value || settingsData.application.version;
+  }
+  try { localStorage.setItem('morali_settings', JSON.stringify(settingsData)); } catch(e) {}
+  addLog('config', 'Paramètres sauvegardés', 'Super Admin', `Section: ${currentSettingsSection}`);
+  showToast('Paramètres enregistrés', 'success');
+}
+
+// ===== SUPABASE =====
+function loadSupabaseConfig() {
+  try {
+    const cfg = JSON.parse(localStorage.getItem('morali_supabase') || '{}');
+    if (cfg.url) document.getElementById('sb-project-url').value = cfg.url;
+    if (cfg.anon) document.getElementById('sb-anon-key').value = cfg.anon;
+    if (cfg.service) document.getElementById('sb-service-key').value = cfg.service;
+    if (cfg.url) updateSupabaseStatus(true, cfg.url);
+  } catch(e) {}
+}
+
+function saveSupabaseConfig() {
+  const url = document.getElementById('sb-project-url').value.trim();
+  const anon = document.getElementById('sb-anon-key').value.trim();
+  const service = document.getElementById('sb-service-key').value.trim();
+  if (!url || !anon) { showToast('URL et clé API requis', 'error'); return; }
+  try { localStorage.setItem('morali_supabase', JSON.stringify({ url, anon, service })); } catch(e) {}
+  updateSupabaseStatus(true, url);
+  addLog('config', 'Configuration Supabase', 'Super Admin', 'Paramètres de connexion enregistrés');
+  showToast('Configuration Supabase sauvegardée', 'success');
+}
+
+function testSupabase() {
+  const url = document.getElementById('sb-project-url').value.trim();
+  const anon = document.getElementById('sb-anon-key').value.trim();
+  if (!url || !anon) { showToast('Renseignez l\'URL et la clé API d\'abord', 'error'); return; }
+
+  showToast('Test de connexion en cours…', 'info');
+  document.getElementById('sb-label').textContent = 'Test en cours…';
+
+  // Simulate test
+  setTimeout(() => {
+    const ok = url.includes('supabase.co') || url.startsWith('https://');
+    updateSupabaseStatus(ok, url);
+    showToast(ok ? 'Connexion Supabase réussie !' : 'Échec — vérifiez l\'URL et les clés', ok ? 'success' : 'error');
+    addLog('config', ok ? 'Test Supabase réussi' : 'Test Supabase échoué', 'Super Admin', url);
+  }, 1500);
+}
+
+function updateSupabaseStatus(ok, url) {
+  document.getElementById('sb-dot').className = 'supabase-dot ' + (ok ? 'connected' : 'disconnected');
+  document.getElementById('sb-label').textContent = ok ? 'Connecté à Supabase' : 'Non connecté';
+  document.getElementById('sb-url').textContent = url ? url.replace('https://','').substring(0,30)+'…' : '';
+}
+
+// ===== MODAL =====
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+// Close on overlay click
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', e => { if (e.target === o) closeModal(o.id); });
+});
+
+// ===== TOAST =====
+function showToast(msg, type = 'info') {
+  const icons = {
+    success: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>',
+    error: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
+    info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>',
+  };
+
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = `${icons[type]||icons.info}<span>${msg}</span>`;
+  document.getElementById('toast-container').appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateX(20px)'; t.style.transition = '.3s'; setTimeout(() => t.remove(), 300); }, 3000);
+}
+
+// ===== REFRESH =====
+function refreshData() {
+  showToast('Données actualisées', 'success');
+  const panel = document.querySelector('.panel.active').id;
+  if (panel === 'panel-users') renderUsers();
+  if (panel === 'panel-logs') renderLogs();
+  if (panel === 'panel-roles') { renderRoles(); renderPermMatrix(); }
+}
+
+// ===== SIDEBAR TOGGLE (mobile) =====
+function toggleSidebar() {
+  const sidebar = document.querySelector('.sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  const isOpen = sidebar.classList.contains('open');
+  sidebar.classList.toggle('open', !isOpen);
+  overlay.classList.toggle('open', !isOpen);
+}
+
+function closeSidebar() {
+  document.querySelector('.sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('open');
+}
+
+// ===== BOTTOM NAV MOBILE =====
+function navigateMobile(section) {
+  // Update bottom nav active state
+  document.querySelectorAll('.bottom-nav-item').forEach(b => b.classList.remove('active'));
+  const el = document.getElementById('bn-' + section);
+  if (el) el.classList.add('active');
+
+  // Also update sidebar nav
+  const navItems = document.querySelectorAll('.nav-item');
+  const sectionMap = { dashboard:0, users:1, roles:2, logs:3, settings:4, supabase:5 };
+  navItems.forEach(n => n.classList.remove('active'));
+  if (navItems[sectionMap[section]]) navItems[sectionMap[section]].classList.add('active');
+
+  navigate(section, null);
+  closeSidebar();
+}
+
+// ===== INIT =====
+renderDashboard();
+renderUsers();
+loadSupabaseConfig();
+</script>
+</body>
+</html>
