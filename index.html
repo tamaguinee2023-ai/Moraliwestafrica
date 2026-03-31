@@ -1105,7 +1105,7 @@ tr:hover td{background:rgba(255,255,255,.024);color:var(--text)}
   .main{
     margin-left:0;
     padding:12px 12px 90px;
-    padding-top:62px;
+    padding-top:66px;
   }
 
   /* ── BOTTOM NAV ── */
@@ -1162,9 +1162,9 @@ tr:hover td{background:rgba(255,255,255,.024);color:var(--text)}
   .card{padding:14px 12px;}
   .card-title{font-size:11px;margin-bottom:12px;}
 
-  /* ── TABLES → CARDS MOBILES ── */
+  /* ── TABLES → scroll horizontal si nécessaire ── */
   .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
-  table{min-width:480px;}
+  table{min-width:520px;}
 
   /* ── FILTER ROW ── */
   .filter-row{
@@ -1392,9 +1392,9 @@ tr.selected td { background: var(--gold-dim) !important; }
 
 /* ── MOBILE SUPPLÉMENTAIRE ── */
 @media (max-width: 768px) {
-  /* Plus grand touch target pour les boutons */
-  .btn { min-height: 38px; }
-  .btn-sm { min-height: 32px; }
+  /* Plus grand touch target pour les boutons (44px = standard Apple/Google) */
+  .btn { min-height: 44px; }
+  .btn-sm { min-height: 36px; }
 
   /* Badge alerte flottant sur l'icône dans bottom nav */
   .bn-item { position: relative; }
@@ -1439,11 +1439,14 @@ tr.selected td { background: var(--gold-dim) !important; }
 /* Safe area pour iPhone X+ */
 @supports (padding-bottom: env(safe-area-inset-bottom)) {
   .bottom-nav {
-    padding-bottom: env(safe-area-inset-bottom);
-    height: calc(66px + env(safe-area-inset-bottom));
+    padding-bottom: calc(4px + env(safe-area-inset-bottom));
+    height: auto;
+    min-height: 58px;
   }
-  .main {
-    padding-bottom: calc(88px + env(safe-area-inset-bottom));
+  @media(max-width:768px){
+    .main {
+      padding-bottom: calc(88px + env(safe-area-inset-bottom));
+    }
   }
 }
 
@@ -1500,7 +1503,13 @@ tr.selected td { background: var(--gold-dim) !important; }
   #pwa-update-banner{padding-bottom:calc(12px + env(safe-area-inset-bottom));}
 }
 @media(display-mode:standalone){
-  .topbar{padding-top:env(safe-area-inset-top,0px);}
+  .mobile-topbar{
+    padding-top: env(safe-area-inset-top, 0px);
+    height: calc(56px + env(safe-area-inset-top, 0px));
+  }
+  @media(max-width:768px){
+    .main{ padding-top: calc(66px + env(safe-area-inset-top, 0px)); }
+  }
 }
 </style>
 </head>
@@ -1522,15 +1531,15 @@ tr.selected td { background: var(--gold-dim) !important; }
       </div>
       <div class="form-group">
         <label>Adresse email</label>
-        <input type="email" id="loginEmail" placeholder="admin@stockbtp.com" autocomplete="off">
+        <input type="email" id="loginEmail" placeholder="admin@stockbtp.com" autocomplete="email" inputmode="email">
       </div>
       <div class="form-group">
         <label>Mot de passe</label>
-        <input type="password" id="loginPassword" placeholder="••••••••">
+        <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
       </div>
       <div class="form-group" id="confirmPwdGroup" style="display:none">
         <label>Confirmer le mot de passe</label>
-        <input type="password" id="loginPasswordConfirm" placeholder="••••••••">
+        <input type="password" id="loginPasswordConfirm" placeholder="••••••••" autocomplete="new-password">
       </div>
       <p class="login-error" id="loginError"></p>
       <button class="btn-login" id="btnAuthSubmit">🔐 Se connecter</button>
@@ -2463,11 +2472,11 @@ tr.selected td { background: var(--gold-dim) !important; }
       </div>
       <div class="form-row">
         <div class="fg"><label>Magasin *</label><select id="p_magasin"></select></div>
-        <div class="fg"><label>Quantité initiale</label><input type="number" id="p_qte" value="0" min="0"></div>
+        <div class="fg"><label>Quantité initiale</label><input type="number" id="p_qte" inputmode="decimal" value="0" min="0"></div>
       </div>
       <div class="form-row">
-        <div class="fg"><label>Stock minimum (alerte)</label><input type="number" id="p_stockmin" value="10" min="0"></div>
-        <div class="fg"><label>Prix unitaire (GNF)</label><input type="number" id="p_prix" value="0" min="0"></div>
+        <div class="fg"><label>Stock minimum (alerte)</label><input type="number" id="p_stockmin" inputmode="decimal" value="10" min="0"></div>
+        <div class="fg"><label>Prix unitaire (GNF)</label><input type="number" id="p_prix" inputmode="decimal" value="0" min="0"></div>
       </div>
     </div>
     <div class="modal-footer">
@@ -2490,7 +2499,7 @@ tr.selected td { background: var(--gold-dim) !important; }
         <div class="fg"><label>Magasin *</label><select id="e_magasin"></select></div>
       </div>
       <div class="form-row">
-        <div class="fg"><label>Quantité *</label><input type="number" id="e_qte" value="1" min="1"></div>
+        <div class="fg"><label>Quantité *</label><input type="number" id="e_qte" inputmode="decimal" value="1" min="1"></div>
         <div class="fg"><label>Date</label><input type="date" id="e_date"></div>
       </div>
       <div class="form-row">
@@ -2521,7 +2530,7 @@ tr.selected td { background: var(--gold-dim) !important; }
         <div class="fg"><label>Magasin *</label><select id="s_magasin"></select></div>
       </div>
       <div class="form-row">
-        <div class="fg"><label>Quantité *</label><input type="number" id="s_qte" value="1" min="1"></div>
+        <div class="fg"><label>Quantité *</label><input type="number" id="s_qte" inputmode="decimal" value="1" min="1"></div>
         <div class="fg"><label>Date</label><input type="date" id="s_date"></div>
       </div>
       <div class="form-row">
@@ -2555,7 +2564,7 @@ tr.selected td { background: var(--gold-dim) !important; }
         <div class="fg"><label>Magasin destination *</label><select id="t_dest"></select></div>
       </div>
       <div class="form-row">
-        <div class="fg"><label>Quantité *</label><input type="number" id="t_qte" value="1" min="1"></div>
+        <div class="fg"><label>Quantité *</label><input type="number" id="t_qte" inputmode="decimal" value="1" min="1"></div>
         <div class="fg"><label>Date</label><input type="date" id="t_date"></div>
       </div>
       <div class="form-row cols1">
@@ -2617,11 +2626,11 @@ tr.selected td { background: var(--gold-dim) !important; }
       </div>
       <div class="form-row">
         <div class="fg"><label>Matériau *</label><select id="c_produit"></select></div>
-        <div class="fg"><label>Quantité *</label><input type="number" id="c_qte" value="1" min="1"></div>
+        <div class="fg"><label>Quantité *</label><input type="number" id="c_qte" inputmode="decimal" value="1" min="1"></div>
       </div>
       <div class="form-row">
         <div class="fg"><label>Magasin de livraison *</label><select id="c_magasin"></select></div>
-        <div class="fg"><label>Montant estimé (GNF)</label><input type="number" id="c_montant" value="0" min="0"></div>
+        <div class="fg"><label>Montant estimé (GNF)</label><input type="number" id="c_montant" inputmode="decimal" value="0" min="0"></div>
       </div>
       <div class="form-row cols1">
         <div class="fg"><label>Note</label><textarea id="c_note" placeholder="Instructions spéciales..."></textarea></div>
