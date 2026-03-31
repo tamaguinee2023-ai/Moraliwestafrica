@@ -3,35 +3,16 @@
     {
       "source": "/sw.js",
       "headers": [
-        { "key": "Cache-Control",   "value": "no-cache, no-store, must-revalidate" },
         { "key": "Service-Worker-Allowed", "value": "/" },
-        { "key": "Content-Type",    "value": "application/javascript; charset=utf-8" }
+        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" },
+        { "key": "Content-Type", "value": "application/javascript" }
       ]
     },
     {
-      "source": "/manifest.json",
+      "source": "/index.html",
       "headers": [
-        { "key": "Cache-Control",   "value": "public, max-age=86400" },
-        { "key": "Content-Type",    "value": "application/manifest+json; charset=utf-8" }
-      ]
-    },
-    {
-      "source": "/icons/(.*)",
-      "headers": [
-        { "key": "Cache-Control",   "value": "public, max-age=604800, immutable" }
-      ]
-    },
-    {
-      "source": "/(.*)",
-      "headers": [
-        { "key": "X-Content-Type-Options",   "value": "nosniff" },
-        { "key": "X-Frame-Options",          "value": "SAMEORIGIN" },
-        { "key": "X-XSS-Protection",         "value": "1; mode=block" },
-        { "key": "Referrer-Policy",          "value": "strict-origin-when-cross-origin" }
+        { "key": "Cache-Control", "value": "no-cache" }
       ]
     }
-  ],
-  "rewrites": [
-    { "source": "/((?!sw.js|manifest.json|icons/.*).*)", "destination": "/index.html" }
   ]
 }

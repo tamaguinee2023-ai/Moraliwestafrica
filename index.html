@@ -5110,14 +5110,14 @@ function generatePWAIcon(size) {
     const icon192 = generatePWAIcon(192);
     const icon144 = generatePWAIcon(144);
 
-    // Mettre à jour apple-touch-icon avec le PNG généré
     if(icon192) {
       const ati = document.querySelector('link[rel="apple-touch-icon"]');
       if(ati) ati.href = icon192;
     }
 
-    // start_url absolu basé sur la page courante (évite les problèmes Netlify avec "./")
+    // start_url = URL exacte de la page, scope = répertoire parent
     const startUrl = location.href.split('?')[0].split('#')[0];
+    const scopeUrl = startUrl.substring(0, startUrl.lastIndexOf('/') + 1);
 
     const icons = [];
     if(icon144) icons.push({ src: icon144, sizes: '144x144', type: 'image/png', purpose: 'any' });
@@ -5129,7 +5129,7 @@ function generatePWAIcon(size) {
       short_name: "Morali BTP",
       description: "Gestion des stocks et matériaux de construction",
       start_url: startUrl,
-      scope: startUrl,
+      scope: scopeUrl,
       display: "standalone",
       orientation: "any",
       background_color: "#07080f",
@@ -5153,16 +5153,14 @@ function generatePWAIcon(size) {
   }
 })();
 
-// ── Service Worker (fichier sw.js déployé à la racine) ──
+// ── Service Worker (sw.js à la racine Vercel) ──
 (function registerSW() {
   if(!('serviceWorker' in navigator)) return;
 
-  // Enregistrer sw.js (doit être à la même racine que index.html sur Netlify)
-  navigator.serviceWorker.register('./sw.js', { scope: './' })
+  navigator.serviceWorker.register('/sw.js')
     .then(reg => {
       console.log('[PWA] Service Worker enregistré ✓', reg.scope);
 
-      // Détecter nouvelle version disponible
       reg.addEventListener('updatefound', () => {
         const newWorker = reg.installing;
         newWorker.addEventListener('statechange', () => {
@@ -5172,12 +5170,10 @@ function generatePWAIcon(size) {
         });
       });
 
-      // Vérifier mises à jour toutes les 60s
       setInterval(() => reg.update(), 60000);
     })
-    .catch(err => console.warn('[PWA] SW échec (normal en dev local):', err));
+    .catch(err => console.warn('[PWA] SW non trouvé (déployer sw.js à la racine):', err));
 
-  // Reload automatique après activation d'une nouvelle version
   let refreshing = false;
   navigator.serviceWorker.addEventListener('controllerchange', () => {
     if(!refreshing) { refreshing = true; location.reload(); }
