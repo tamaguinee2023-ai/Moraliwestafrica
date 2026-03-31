@@ -2,7 +2,17 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Morali BTP">
+<meta name="application-name" content="Morali BTP">
+<meta name="theme-color" content="#07080f">
+<meta name="description" content="Gestion des matériaux — Morali West Africa Ltd">
+<meta name="msapplication-TileColor" content="#07080f">
+<link rel="manifest" id="pwa-manifest">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='96' fill='%2307080f'/%3E%3Ctext x='256' y='340' font-size='260' text-anchor='middle' fill='url(%23g)'%3E📦%3C/text%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23f953c6'/%3E%3Cstop offset='1' stop-color='%2348dbfb'/%3E%3C/linearGradient%3E%3C/svg%3E">
 <title>Morali West Africa Ltd — Gestion des Matériaux</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,700&family=DM+Mono:ital,wght@0,300;0,400;0,500;0,700;1,300;1,700&family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,300;1,14..32,700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -4972,6 +4982,214 @@ document.addEventListener('keydown', e => {
     closeSidebar();
   }
 });
+
+
+// ══════════════════════════════════════════════════════
+//  PWA — Manifest · Service Worker · Install Prompt
+// ══════════════════════════════════════════════════════
+
+// ── Manifest dynamique (inline via Blob) ──
+(function injectManifest() {
+  const manifest = {
+    name: "Morali West Africa — Gestion des Matériaux",
+    short_name: "Morali BTP",
+    description: "Gestion des stocks et matériaux de construction",
+    start_url: "./",
+    display: "standalone",
+    orientation: "any",
+    background_color: "#07080f",
+    theme_color: "#07080f",
+    lang: "fr",
+    categories: ["business", "productivity"],
+    icons: [
+      {
+        src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='96' fill='%2307080f'/%3E%3Ctext x='256' y='340' font-size='260' text-anchor='middle'%3E📦%3C/text%3E%3C/svg%3E",
+        sizes: "512x512",
+        type: "image/svg+xml",
+        purpose: "any maskable"
+      },
+      {
+        src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='36' fill='%2307080f'/%3E%3Ctext x='96' y='130' font-size='100' text-anchor='middle'%3E📦%3C/text%3E%3C/svg%3E",
+        sizes: "192x192",
+        type: "image/svg+xml",
+        purpose: "any maskable"
+      }
+    ],
+    shortcuts: [
+      { name: "Inventaire",  short_name: "Stock",    url: "./?page=inventaire",  description: "Voir l'inventaire" },
+      { name: "Entrées",     short_name: "Entrées",  url: "./?page=entrees",     description: "Nouvelles entrées" },
+      { name: "Sorties",     short_name: "Sorties",  url: "./?page=sorties",     description: "Nouvelles sorties" },
+      { name: "Tableau bord",short_name: "Dashboard",url: "./?page=dashboard",   description: "Tableau de bord" }
+    ]
+  };
+  const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const link = document.getElementById('pwa-manifest');
+  if(link) link.href = url;
+})();
+
+// ── Service Worker (inline via Blob URL) ──
+(function registerSW() {
+  if(!('serviceWorker' in navigator)) return;
+
+  const CACHE  = 'morali-btp-v1';
+  const ASSETS = [
+    'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,700&family=DM+Mono:ital,wght@0,300;0,400;0,500;0,700;1,300;1,700&family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,300;1,14..32,700&display=swap',
+    'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'
+  ];
+
+  const swCode = `
+const CACHE_NAME = '${CACHE}';
+const PRECACHE   = ${JSON.stringify(ASSETS)};
+
+// Install — précache des assets externes
+self.addEventListener('install', e => {
+  e.waitUntil(
+    caches.open(CACHE_NAME).then(cache => {
+      return Promise.allSettled(PRECACHE.map(url =>
+        cache.add(url).catch(() => null)
+      ));
+    }).then(() => self.skipWaiting())
+  );
+});
+
+// Activate — nettoyage anciens caches
+self.addEventListener('activate', e => {
+  e.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
+    ).then(() => self.clients.claim())
+  );
+});
+
+// Fetch — stratégie Network-first avec fallback cache
+self.addEventListener('fetch', e => {
+  // Ne pas intercepter les requêtes Supabase/Firebase (toujours réseau)
+  const url = e.request.url;
+  if(url.includes('supabase.co') || url.includes('firebase') || url.includes('firestore')) return;
+
+  if(e.request.method !== 'GET') return;
+
+  e.respondWith(
+    fetch(e.request)
+      .then(res => {
+        // Mettre en cache les réponses valides
+        if(res && res.status === 200) {
+          const resClone = res.clone();
+          caches.open(CACHE_NAME).then(c => c.put(e.request, resClone));
+        }
+        return res;
+      })
+      .catch(() => caches.match(e.request))
+  );
+});
+
+// Message — force update
+self.addEventListener('message', e => {
+  if(e.data === 'SKIP_WAITING') self.skipWaiting();
+});
+`;
+
+  const blob = new Blob([swCode], { type: 'application/javascript' });
+  const swURL = URL.createObjectURL(blob);
+
+  navigator.serviceWorker.register(swURL, { scope: './' })
+    .then(reg => {
+      console.log('[PWA] Service Worker enregistré ✓', reg.scope);
+
+      // Vérifier mises à jour
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        newWorker.addEventListener('statechange', () => {
+          if(newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            showPWAUpdateBanner();
+          }
+        });
+      });
+    })
+    .catch(err => console.warn('[PWA] SW échec:', err));
+
+  // Écouter contrôle SW (reload après update)
+  let refreshing = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if(!refreshing) { refreshing = true; location.reload(); }
+  });
+})();
+
+// ── Bannière de mise à jour ──
+function showPWAUpdateBanner() {
+  const b = document.createElement('div');
+  b.id = 'pwa-update-banner';
+  b.innerHTML = `
+    <span>🔄 Nouvelle version disponible</span>
+    <button onclick="document.getElementById('pwa-update-banner').remove();
+      navigator.serviceWorker.controller?.postMessage('SKIP_WAITING')">
+      Mettre à jour
+    </button>
+    <button onclick="this.closest('#pwa-update-banner').remove()" style="background:transparent;border:none;color:inherit;cursor:pointer;font-size:16px;padding:4px 8px">✕</button>
+  `;
+  document.body.appendChild(b);
+}
+
+// ── Install Prompt (bouton "Installer l'app") ──
+let _deferredPrompt = null;
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  _deferredPrompt = e;
+  showInstallBtn();
+});
+
+window.addEventListener('appinstalled', () => {
+  _deferredPrompt = null;
+  hideInstallBtn();
+  showToast('✅ Application installée avec succès !', 'success');
+});
+
+function showInstallBtn() {
+  if(document.getElementById('pwa-install-btn')) return;
+  const btn = document.createElement('button');
+  btn.id = 'pwa-install-btn';
+  btn.innerHTML = '📲 Installer l'app';
+  btn.onclick = async () => {
+    if(!_deferredPrompt) return;
+    _deferredPrompt.prompt();
+    const { outcome } = await _deferredPrompt.userChoice;
+    if(outcome === 'accepted') showToast('⏳ Installation en cours…', 'info');
+    _deferredPrompt = null;
+    hideInstallBtn();
+  };
+  document.body.appendChild(btn);
+}
+
+function hideInstallBtn() {
+  document.getElementById('pwa-install-btn')?.remove();
+}
+
+// ── Indicateur de connectivité ──
+function updateOnlineStatus() {
+  const online = navigator.onLine;
+  let indicator = document.getElementById('pwa-online-indicator');
+  if(!indicator) {
+    indicator = document.createElement('div');
+    indicator.id = 'pwa-online-indicator';
+    document.body.appendChild(indicator);
+  }
+  if(online) {
+    indicator.textContent = '';
+    indicator.className = 'online';
+    // Masquer après 2s si en ligne
+    setTimeout(() => { if(navigator.onLine) indicator.textContent = ''; }, 2000);
+  } else {
+    indicator.textContent = '📡 Hors ligne — données locales';
+    indicator.className = 'offline';
+  }
+}
+window.addEventListener('online',  updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
 
 
 
