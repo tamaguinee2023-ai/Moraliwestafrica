@@ -5041,106 +5041,116 @@ document.addEventListener('keydown', e => {
 
 // ── Génère une icône PNG via Canvas (nécessaire pour Chrome PWA) ──
 function generatePWAIcon(size) {
-  const canvas = document.createElement('canvas');
-  canvas.width = canvas.height = size;
-  const ctx = canvas.getContext('2d');
-  const r = size * 0.18; // border-radius
+  try {
+    const canvas = document.createElement('canvas');
+    canvas.width = canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    const r = size * 0.18;
 
-  // Fond arrondi
-  ctx.beginPath();
-  ctx.moveTo(r, 0); ctx.lineTo(size - r, 0);
-  ctx.quadraticCurveTo(size, 0, size, r);
-  ctx.lineTo(size, size - r);
-  ctx.quadraticCurveTo(size, size, size - r, size);
-  ctx.lineTo(r, size); ctx.quadraticCurveTo(0, size, 0, size - r);
-  ctx.lineTo(0, r); ctx.quadraticCurveTo(0, 0, r, 0);
-  ctx.closePath();
+    // Fond arrondi (compatible sans roundRect)
+    ctx.beginPath();
+    ctx.moveTo(r, 0); ctx.lineTo(size - r, 0);
+    ctx.quadraticCurveTo(size, 0, size, r);
+    ctx.lineTo(size, size - r);
+    ctx.quadraticCurveTo(size, size, size - r, size);
+    ctx.lineTo(r, size); ctx.quadraticCurveTo(0, size, 0, size - r);
+    ctx.lineTo(0, r); ctx.quadraticCurveTo(0, 0, r, 0);
+    ctx.closePath();
 
-  // Gradient fond
-  const bg = ctx.createLinearGradient(0, 0, size, size);
-  bg.addColorStop(0, '#0c0f1e');
-  bg.addColorStop(1, '#07080f');
-  ctx.fillStyle = bg;
-  ctx.fill();
+    const bg = ctx.createLinearGradient(0, 0, size, size);
+    bg.addColorStop(0, '#0c0f1e');
+    bg.addColorStop(1, '#07080f');
+    ctx.fillStyle = bg;
+    ctx.fill();
 
-  // Cercle central gradient
-  const cx = size / 2, cy = size / 2, cr = size * 0.32;
-  const grd = ctx.createRadialGradient(cx - cr * 0.3, cy - cr * 0.3, 0, cx, cy, cr);
-  grd.addColorStop(0, 'rgba(249,83,198,0.35)');
-  grd.addColorStop(0.5, 'rgba(72,219,251,0.20)');
-  grd.addColorStop(1, 'rgba(11,232,129,0.10)');
-  ctx.beginPath();
-  ctx.arc(cx, cy, cr, 0, Math.PI * 2);
-  ctx.fillStyle = grd;
-  ctx.fill();
+    const cx = size / 2, cy = size / 2, cr = size * 0.32;
+    const grd = ctx.createRadialGradient(cx - cr * 0.3, cy - cr * 0.3, 0, cx, cy, cr);
+    grd.addColorStop(0, 'rgba(249,83,198,0.35)');
+    grd.addColorStop(0.5, 'rgba(72,219,251,0.20)');
+    grd.addColorStop(1, 'rgba(11,232,129,0.10)');
+    ctx.beginPath();
+    ctx.arc(cx, cy, cr, 0, Math.PI * 2);
+    ctx.fillStyle = grd;
+    ctx.fill();
 
-  // Lettre "M" stylisée
-  const fs = size * 0.42;
-  ctx.font = `700 ${fs}px "Inter", "Arial", sans-serif`;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
+    const fs = size * 0.42;
+    ctx.font = `700 ${fs}px Arial, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
 
-  // Gradient texte
-  const tg = ctx.createLinearGradient(cx - fs / 2, cy, cx + fs / 2, cy);
-  tg.addColorStop(0, '#f953c6');
-  tg.addColorStop(0.4, '#a29bfe');
-  tg.addColorStop(0.7, '#48dbfb');
-  tg.addColorStop(1, '#0be881');
-  ctx.fillStyle = tg;
-  ctx.fillText('M', cx, cy + size * 0.02);
+    const tg = ctx.createLinearGradient(cx - fs / 2, cy, cx + fs / 2, cy);
+    tg.addColorStop(0, '#f953c6');
+    tg.addColorStop(0.4, '#a29bfe');
+    tg.addColorStop(0.7, '#48dbfb');
+    tg.addColorStop(1, '#0be881');
+    ctx.fillStyle = tg;
+    ctx.fillText('M', cx, cy + size * 0.02);
 
-  // Ligne déco bas
-  const lw = size * 0.55, ly = cy + fs * 0.62, lh = size * 0.025;
-  const lg = ctx.createLinearGradient(cx - lw / 2, 0, cx + lw / 2, 0);
-  lg.addColorStop(0, 'transparent');
-  lg.addColorStop(0.3, '#f953c6');
-  lg.addColorStop(0.7, '#48dbfb');
-  lg.addColorStop(1, 'transparent');
-  ctx.fillStyle = lg;
-  ctx.beginPath();
-  ctx.roundRect(cx - lw / 2, ly, lw, lh, lh / 2);
-  ctx.fill();
+    // Ligne déco — rectangle simple (compatible sans roundRect)
+    const lw = size * 0.55, ly = cy + fs * 0.62, lh = size * 0.025;
+    const lg = ctx.createLinearGradient(cx - lw / 2, 0, cx + lw / 2, 0);
+    lg.addColorStop(0, 'transparent');
+    lg.addColorStop(0.3, '#f953c6');
+    lg.addColorStop(0.7, '#48dbfb');
+    lg.addColorStop(1, 'transparent');
+    ctx.fillStyle = lg;
+    ctx.fillRect(cx - lw / 2, ly, lw, lh);
 
-  return canvas.toDataURL('image/png');
+    return canvas.toDataURL('image/png');
+  } catch(e) {
+    console.warn('[PWA] generatePWAIcon error:', e);
+    return '';
+  }
 }
 
 // ── Manifest dynamique (inline via Blob) ──
 (function injectManifest() {
-  const icon512 = generatePWAIcon(512);
-  const icon192 = generatePWAIcon(192);
-  const icon144 = generatePWAIcon(144);
+  try {
+    const icon512 = generatePWAIcon(512);
+    const icon192 = generatePWAIcon(192);
+    const icon144 = generatePWAIcon(144);
 
-  // Mettre à jour apple-touch-icon avec le PNG généré
-  const ati = document.querySelector('link[rel="apple-touch-icon"]');
-  if(ati) ati.href = icon192;
+    // Mettre à jour apple-touch-icon avec le PNG généré
+    if(icon192) {
+      const ati = document.querySelector('link[rel="apple-touch-icon"]');
+      if(ati) ati.href = icon192;
+    }
 
-  const manifest = {
-    name: "Morali West Africa — Gestion des Matériaux",
-    short_name: "Morali BTP",
-    description: "Gestion des stocks et matériaux de construction",
-    start_url: "./",
-    display: "standalone",
-    orientation: "any",
-    background_color: "#07080f",
-    theme_color: "#07080f",
-    lang: "fr",
-    categories: ["business", "productivity"],
-    icons: [
-      { src: icon144, sizes: "144x144", type: "image/png", purpose: "any" },
-      { src: icon192, sizes: "192x192", type: "image/png", purpose: "any" },
-      { src: icon512, sizes: "512x512", type: "image/png", purpose: "any maskable" }
-    ],
-    shortcuts: [
-      { name: "Inventaire",  short_name: "Stock",    url: "./?page=inventaire",  description: "Voir l'inventaire" },
-      { name: "Entrées",     short_name: "Entrées",  url: "./?page=entrees",     description: "Nouvelles entrées" },
-      { name: "Sorties",     short_name: "Sorties",  url: "./?page=sorties",     description: "Nouvelles sorties" },
-      { name: "Tableau bord",short_name: "Dashboard",url: "./?page=dashboard",   description: "Tableau de bord" }
-    ]
-  };
-  const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
-  const url  = URL.createObjectURL(blob);
-  const link = document.getElementById('pwa-manifest');
-  if(link) link.href = url;
+    // start_url absolu basé sur la page courante (évite les problèmes Netlify avec "./")
+    const startUrl = location.href.split('?')[0].split('#')[0];
+
+    const icons = [];
+    if(icon144) icons.push({ src: icon144, sizes: '144x144', type: 'image/png', purpose: 'any' });
+    if(icon192) icons.push({ src: icon192, sizes: '192x192', type: 'image/png', purpose: 'any' });
+    if(icon512) icons.push({ src: icon512, sizes: '512x512', type: 'image/png', purpose: 'any maskable' });
+
+    const manifest = {
+      name: "Morali West Africa — Gestion des Matériaux",
+      short_name: "Morali BTP",
+      description: "Gestion des stocks et matériaux de construction",
+      start_url: startUrl,
+      scope: startUrl,
+      display: "standalone",
+      orientation: "any",
+      background_color: "#07080f",
+      theme_color: "#07080f",
+      lang: "fr",
+      categories: ["business", "productivity"],
+      icons: icons,
+      shortcuts: [
+        { name: "Inventaire",  short_name: "Stock",    url: startUrl + "?page=inventaire",  description: "Voir l'inventaire" },
+        { name: "Entrées",     short_name: "Entrées",  url: startUrl + "?page=entrees",     description: "Nouvelles entrées" },
+        { name: "Sorties",     short_name: "Sorties",  url: startUrl + "?page=sorties",     description: "Nouvelles sorties" },
+        { name: "Dashboard",   short_name: "Dashboard",url: startUrl,                       description: "Tableau de bord" }
+      ]
+    };
+    const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+    const url  = URL.createObjectURL(blob);
+    const link = document.getElementById('pwa-manifest');
+    if(link) link.href = url;
+  } catch(e) {
+    console.warn('[PWA] injectManifest error:', e);
+  }
 })();
 
 // ── Service Worker désactivé (Blob URL incompatible avec navigation PWA) ──
