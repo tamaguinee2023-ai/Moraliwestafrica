@@ -5153,17 +5153,51 @@ function generatePWAIcon(size) {
   }
 })();
 
-// ── Service Worker désactivé (Blob URL incompatible avec navigation PWA) ──
-// Le manifest suffit pour l'installation. Le SW sera ajouté si un fichier sw.js est déployé séparément.
-(function unregisterOldSW() {
+// ── Service Worker (fichier sw.js déployé à la racine) ──
+(function registerSW() {
   if(!('serviceWorker' in navigator)) return;
-  navigator.serviceWorker.getRegistrations().then(regs => {
-    regs.forEach(r => r.unregister());
+
+  // Enregistrer sw.js (doit être à la même racine que index.html sur Netlify)
+  navigator.serviceWorker.register('./sw.js', { scope: './' })
+    .then(reg => {
+      console.log('[PWA] Service Worker enregistré ✓', reg.scope);
+
+      // Détecter nouvelle version disponible
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        newWorker.addEventListener('statechange', () => {
+          if(newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            showPWAUpdateBanner();
+          }
+        });
+      });
+
+      // Vérifier mises à jour toutes les 60s
+      setInterval(() => reg.update(), 60000);
+    })
+    .catch(err => console.warn('[PWA] SW échec (normal en dev local):', err));
+
+  // Reload automatique après activation d'une nouvelle version
+  let refreshing = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if(!refreshing) { refreshing = true; location.reload(); }
   });
 })();
 
-// ── Bannière de mise à jour (désactivée, SW supprimé) ──
-function showPWAUpdateBanner() {}
+// ── Bannière de mise à jour ──
+function showPWAUpdateBanner() {
+  if(document.getElementById('pwa-update-banner')) return;
+  const b = document.createElement('div');
+  b.id = 'pwa-update-banner';
+  b.innerHTML = `
+    <span>🔄 Nouvelle version disponible</span>
+    <button onclick="navigator.serviceWorker.controller?.postMessage('SKIP_WAITING');this.closest('#pwa-update-banner').remove()">
+      Mettre à jour
+    </button>
+    <button onclick="this.closest('#pwa-update-banner').remove()" style="background:transparent;border:none;color:inherit;cursor:pointer;font-size:16px;padding:4px 8px">✕</button>
+  `;
+  document.body.appendChild(b);
+}
 
 // ── Install Prompt (bouton "Installer l'app") ──
 let _deferredPrompt = null;
@@ -5200,25 +5234,59 @@ function hideInstallBtn() {
   document.getElementById('pwa-install-btn')?.remove();
 }
 
-// ── Indicateur de connectivité ──
+// ── Indicateur de connectivité + rechargement auto des données ──
+let _wasOffline = false;
+
 function updateOnlineStatus() {
   const online = navigator.onLine;
   let indicator = document.getElementById('pwa-online-indicator');
   if(!indicator) {
     indicator = document.createElement('div');
     indicator.id = 'pwa-online-indicator';
-    // Safety: never block clicks
-    indicator.style.cssText = 'position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:9500;pointer-events:none;font-size:12px;font-weight:600;padding:7px 16px;border-radius:30px;backdrop-filter:blur(10px);transition:opacity .3s;';
+    indicator.style.cssText = [
+      'position:fixed;top:10px;left:50%;transform:translateX(-50%);',
+      'z-index:9500;pointer-events:none;',
+      'font-size:12px;font-weight:600;padding:7px 16px;',
+      'border-radius:30px;backdrop-filter:blur(10px);',
+      'transition:opacity .4s;opacity:0;white-space:nowrap;'
+    ].join('');
     document.body.appendChild(indicator);
   }
+
   if(online) {
-    indicator.style.opacity = '0';
-    indicator.textContent = '';
+    // Retour en ligne après avoir été hors ligne → recharger les données
+    if(_wasOffline) {
+      _wasOffline = false;
+      indicator.style.cssText += 'background:rgba(11,232,129,.18);border:1px solid rgba(11,232,129,.35);color:#0be881;opacity:1;';
+      indicator.textContent = '✅ Connexion rétablie — actualisation…';
+      // Recharger les données depuis Supabase
+      if(typeof loadAll === 'function') {
+        setTimeout(() => loadAll().then(() => {
+          renderDashboard();
+          showToast('✓ Données synchronisées', 'success');
+        }), 500);
+      }
+      // Masquer la bannière après 3s
+      setTimeout(() => { indicator.style.opacity = '0'; }, 3000);
+    } else {
+      indicator.style.opacity = '0';
+    }
   } else {
-    indicator.style.cssText += 'background:rgba(255,107,107,.18);border:1px solid rgba(255,107,107,.35);color:#ff6b6b;opacity:1;pointer-events:none;';
-    indicator.textContent = '📡 Hors ligne — données locales';
+    _wasOffline = true;
+    indicator.style.cssText = [
+      'position:fixed;top:10px;left:50%;transform:translateX(-50%);',
+      'z-index:9500;pointer-events:none;',
+      'font-size:12px;font-weight:600;padding:7px 16px;',
+      'border-radius:30px;backdrop-filter:blur(10px);',
+      'transition:opacity .4s;white-space:nowrap;',
+      'background:rgba(255,107,107,.18);border:1px solid rgba(255,107,107,.35);',
+      'color:#ff6b6b;opacity:1;'
+    ].join('');
+    indicator.textContent = '📡 Hors ligne — données en cache';
+    showToast('📡 Hors ligne — l\'app continue de fonctionner', 'info');
   }
 }
+
 window.addEventListener('online',  updateOnlineStatus);
 window.addEventListener('offline', updateOnlineStatus);
 updateOnlineStatus();
