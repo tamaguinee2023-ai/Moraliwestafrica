@@ -174,7 +174,7 @@
   box-shadow:0 2px 18px rgba(0,0,0,.55);
   transition:border-color .35s,box-shadow .35s;
 }
-[data-theme="colorful"] .card:hover{animation:cf-rainbow-border 3.5s linear infinite;}
+[data-theme="colorful"] .card:hover{border-color:#f953c6;box-shadow:0 0 18px rgba(249,83,198,.3);}
 [data-theme="colorful"] .card-title{color:var(--muted);}
 [data-theme="colorful"] .card-title::before{background:linear-gradient(90deg,#f953c6,#a29bfe,#48dbfb,#0be881,transparent);}
 [data-theme="colorful"] .stat-card{background:linear-gradient(160deg,#11152a,#0c0f1e);border-color:#252e55;}
@@ -182,11 +182,11 @@
 [data-theme="colorful"] .stat-card.green {border-left-color:#0be881;box-shadow:0 0 22px rgba(11,232,129,.18) inset;}
 [data-theme="colorful"] .stat-card.blue  {border-left-color:#48dbfb;box-shadow:0 0 22px rgba(72,219,251,.18) inset;}
 [data-theme="colorful"] .stat-card.red   {border-left-color:#ff6b9d;box-shadow:0 0 22px rgba(255,107,157,.18) inset;}
-[data-theme="colorful"] .stat-card:hover{animation:cf-rainbow-border 3.5s linear infinite;}
-[data-theme="colorful"] .stat-icon{animation:cf-float 3s ease-in-out infinite;}
+[data-theme="colorful"] .stat-card:hover{border-color:#48dbfb;box-shadow:0 0 18px rgba(72,219,251,.25);}
+[data-theme="colorful"] .stat-icon{opacity:.9;}
 [data-theme="colorful"] .btn-primary{
   background:linear-gradient(135deg,#f953c6 0%,#a29bfe 30%,#48dbfb 65%,#0be881 100%);
-  background-size:250% auto;animation:cf-flow 3.5s ease infinite;
+  background-size:250% auto;
   color:#07080f;font-weight:700;letter-spacing:.02em;
   box-shadow:0 6px 0 #5e0d55,0 8px 24px rgba(249,83,198,.45),inset 0 1px 0 rgba(255,255,255,.35);
 }
@@ -197,7 +197,7 @@
 [data-theme="colorful"] .btn-secondary:hover{border-color:#f953c6;color:#f953c6;}
 [data-theme="colorful"] .btn-login{
   background:linear-gradient(135deg,#f953c6 0%,#a29bfe 30%,#48dbfb 65%,#0be881 100%);
-  background-size:250% auto;animation:cf-flow 3.5s ease infinite;
+  background-size:250% auto;
   color:#07080f;font-weight:700;
   box-shadow:0 7px 0 #5e0d55,0 10px 30px rgba(249,83,198,.5),inset 0 1px 0 rgba(255,255,255,.35);
 }
@@ -232,7 +232,7 @@
 [data-theme="colorful"] .badge-orange{background:rgba(255,159,67,.11); color:#ff9f43;border-color:rgba(255,159,67,.30);}
 [data-theme="colorful"] .badge-blue  {background:rgba(72,219,251,.11);  color:#48dbfb;border-color:rgba(72,219,251,.30);}
 [data-theme="colorful"] .magasin-card{background:#11152a;border-color:#252e55;}
-[data-theme="colorful"] .magasin-card:hover{animation:cf-rainbow-border 3.5s linear infinite;box-shadow:0 8px 36px rgba(0,0,0,.65);}
+[data-theme="colorful"] .magasin-card:hover{border-color:#0be881;box-shadow:0 0 18px rgba(11,232,129,.25),0 8px 36px rgba(0,0,0,.65);}
 [data-theme="colorful"] .magasin-card.selected{border-color:#f953c6;background:linear-gradient(160deg,rgba(249,83,198,.13),rgba(72,219,251,.08));}
 [data-theme="colorful"] .mc-name{color:var(--text);}
 [data-theme="colorful"] .mc-stat{color:var(--muted);}
@@ -251,7 +251,7 @@
 [data-theme="colorful"] .bn-item.active{color:#f953c6;}
 [data-theme="colorful"] .bn-fab{
   background:linear-gradient(135deg,#f953c6,#a29bfe,#48dbfb,#0be881);
-  background-size:250% auto;animation:cf-flow 3.5s ease infinite;
+  background-size:250% auto;
   box-shadow:0 5px 0 #5e0d55,0 6px 24px rgba(249,83,198,.55);
 }
 [data-theme="colorful"] .mobile-topbar{background:#0c0f1e;border-bottom-color:#252e55;box-shadow:0 2px 18px rgba(0,0,0,.65);}
@@ -292,7 +292,7 @@
 [data-theme="colorful"] #tabLogin,[data-theme="colorful"] #tabRegister{color:var(--muted);}
 [data-theme="colorful"] .progress-fill{
   background:linear-gradient(90deg,#f953c6,#a29bfe,#48dbfb,#0be881,#ffd32a);
-  background-size:250% auto;animation:cf-flow 3.5s ease infinite;
+  background-size:250% auto;
 }
 [data-theme="colorful"] ::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#f953c6,#a29bfe,#48dbfb);}
 [data-theme="colorful"] .import-drop{background:#11152a;border-color:#252e55;}
@@ -382,22 +382,7 @@ body{
   border-color:var(--gold);
   box-shadow:0 0 0 3px var(--gold-dim);
 }
-.btn-login{
-  background:linear-gradient(135deg,var(--gold),var(--gold-light));
-  color:#0d0f12;
-  border:none;border-radius:var(--radius-sm);
-  padding:13px;
-  font-family:var(--font-body);font-weight:600;font-size:13px;
-  letter-spacing:.06em;text-transform:uppercase;
-  cursor:pointer;transition:all .22s;
-  box-shadow:0 4px 16px rgba(201,169,110,.25);
-}
-.btn-login:hover{
-  background:linear-gradient(135deg,var(--gold-light),var(--gold-bright));
-  transform:translateY(-1px);
-  box-shadow:0 8px 24px rgba(201,169,110,.35);
-}
-.btn-login:active{transform:translateY(0)}
+/* btn-login styles → see 3D PREMIUM section below */
 .login-error{
   color:var(--red);font-size:11px;text-align:center;
   display:none;font-family:var(--font-mono);
@@ -530,8 +515,6 @@ body{
   letter-spacing:.04em;
   position:relative;
   transition:transform .12s cubic-bezier(.34,1.56,.64,1), box-shadow .12s ease, filter .12s ease;
-  /* Effet 3D de base */
-  transform-style:preserve-3d;
   user-select:none;
   -webkit-user-select:none;
 }
@@ -1479,6 +1462,46 @@ tr.selected td { background: var(--gold-dim) !important; }
   .hamburger{width:36px;height:36px;font-size:15px;top:12px;left:12px;}
 }
 
+
+/* ══════════════════════════════════════════════
+   PWA — Install Button · Update Banner
+   ══════════════════════════════════════════════ */
+#pwa-install-btn{
+  position:fixed;bottom:88px;right:16px;z-index:8000;
+  display:flex;align-items:center;gap:8px;
+  padding:11px 18px;
+  background:linear-gradient(135deg,#f953c6,#a29bfe,#48dbfb,#0be881);
+  background-size:250% auto;
+  color:#07080f;font-weight:700;font-size:12px;
+  border:none;border-radius:50px;cursor:pointer;
+  box-shadow:0 4px 18px rgba(249,83,198,.45);
+  pointer-events:all;
+  transition:transform .2s,box-shadow .2s;
+}
+#pwa-install-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(249,83,198,.55);}
+#pwa-update-banner{
+  position:fixed;bottom:0;left:0;right:0;z-index:9100;
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  padding:12px 20px;
+  background:rgba(11,232,129,.14);
+  backdrop-filter:blur(12px);
+  border-top:1px solid rgba(11,232,129,.28);
+  color:#0be881;font-size:12px;font-weight:600;
+  pointer-events:all;
+}
+#pwa-update-banner button:first-of-type{
+  padding:6px 14px;
+  background:linear-gradient(90deg,#0be881,#48dbfb);
+  color:#07080f;font-weight:700;font-size:11px;
+  border:none;border-radius:20px;cursor:pointer;
+}
+@supports(padding:env(safe-area-inset-bottom)){
+  #pwa-install-btn{bottom:calc(88px + env(safe-area-inset-bottom));}
+  #pwa-update-banner{padding-bottom:calc(12px + env(safe-area-inset-bottom));}
+}
+@media(display-mode:standalone){
+  .topbar{padding-top:env(safe-area-inset-top,0px);}
+}
 </style>
 </head>
 <body>
@@ -2698,8 +2721,8 @@ window.handleLogin = async () => {
   try {
     if(_authMode === 'register') {
       const confirm = document.getElementById('loginPasswordConfirm').value;
-      if(pwd !== confirm) { err.textContent = 'Les mots de passe ne correspondent pas.'; err.style.display='block'; return; }
-      if(pwd.length < 6)  { err.textContent = 'Le mot de passe doit contenir au moins 6 caractères.'; err.style.display='block'; return; }
+      if(pwd !== confirm) { err.textContent = 'Les mots de passe ne correspondent pas.'; err.style.display='block'; btn.classList.remove('loading'); btn.disabled=false; btn.textContent=origText; return; }
+      if(pwd.length < 6)  { err.textContent = 'Le mot de passe doit contenir au moins 6 caractères.'; err.style.display='block'; btn.classList.remove('loading'); btn.disabled=false; btn.textContent=origText; return; }
       const { error } = await sb.auth.signUp({ email, password: pwd });
       if(error) { err.textContent = error.message; err.style.display='block'; }
       else showToast('Compte créé — vérifiez votre email si confirmation requise','success');
@@ -2729,13 +2752,13 @@ window.handleLogout = async () => {
 
 // Écouter les changements d'état auth
 sb.auth.onAuthStateChange((event, session) => {
-  if(session) {
+  if(session && (event === 'SIGNED_IN' || event === 'INITIAL_SESSION')) {
     STATE.user = session.user;
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('app').style.display = 'block';
     document.getElementById('sidebarUserName').textContent = session.user.email.split('@')[0];
     initApp();
-  } else {
+  } else if(!session) {
     STATE.user = null;
     document.getElementById('loginScreen').style.display = 'flex';
     document.getElementById('app').style.display = 'none';
@@ -2958,6 +2981,10 @@ window.resetStock = async () => {
     await sb.from('mouvements').delete().neq('id', '00000000-0000-0000-0000-000000000000');
     await sb.from('produits').update({ qte_initiale: 0 }).neq('id', '00000000-0000-0000-0000-000000000000');
     _invalidateStockCache();
+    await loadMouvements();
+    await loadProduits();
+    renderDashboard();
+    renderInventaire();
     showToast('✓ Stock réinitialisé à zéro','success');
   } catch(e){ showToast('Erreur: '+e.message,'error'); }
 };
@@ -2973,6 +3000,9 @@ window.resetAll = async () => {
       await sb.from(t).delete().neq('id', dummy);
     }
     _invalidateStockCache();
+    await loadAll();
+    renderDashboard();
+    renderInventaire();
     showToast('✓ Toutes les données supprimées','success');
   } catch(e){ showToast('Erreur: '+e.message,'error'); }
 };
@@ -2981,14 +3011,26 @@ window.resetAll = async () => {
 //  POPULATE SELECTS
 // ══════════════════════════════════════════
 function populateMagasinSelects() {
-  const ids = ['filterMagasin','filterMagasinE','filterMagasinS','filterHistMagasin',
-    'p_magasin','e_magasin','s_magasin','t_source','t_dest','c_magasin'];
-  ids.forEach(id => {
+  // Selects de filtre qui doivent conserver l'option "Tous les magasins"
+  const filterIds = ['filterMagasin','filterMagasinE','filterMagasinS','filterHistMagasin'];
+  // Selects de saisie sans option "Tous"
+  const inputIds  = ['p_magasin','e_magasin','s_magasin','t_source','t_dest','c_magasin'];
+
+  filterIds.forEach(id => {
     const el = document.getElementById(id); if(!el) return;
-    const hasAll = el.querySelector('option[value=""]');
-    const startVal = hasAll ? '<option value="">Tous les magasins</option>' : '';
-    el.innerHTML = startVal + MAGASINS.map(m=>`<option value="${m.id}">${m.nom}</option>`).join('');
+    const prev = el.value;
+    el.innerHTML = '<option value="">Tous les magasins</option>' +
+      MAGASINS.map(m=>`<option value="${m.id}">${m.nom}</option>`).join('');
+    if(prev) el.value = prev;
   });
+
+  inputIds.forEach(id => {
+    const el = document.getElementById(id); if(!el) return;
+    const prev = el.value;
+    el.innerHTML = MAGASINS.map(m=>`<option value="${m.id}">${m.nom}</option>`).join('');
+    if(prev) el.value = prev;
+  });
+
   const catEl = document.getElementById('p_cat');
   if(catEl) catEl.innerHTML = CATEGORIES.map(c=>`<option>${c}</option>`).join('');
   const unEl = document.getElementById('p_unite');
@@ -3250,7 +3292,7 @@ window.renderMouvements = (type) => {
   const tbody    = document.getElementById(type==='entree'?'tableEntrees':'tableSorties');
   if(!tbody) return;
   const data = STATE.mouvements.filter(m=>m.type===type&&
-    (!search||(getProduit(m.produit_id).nom||'').toLowerCase().includes(search)||((m.bl||'').toLowerCase().includes(search)))&&
+    (!search||(getProduit(m.produit_id).nom||'').toLowerCase().includes(search)||String(m.bl||'').toLowerCase().includes(search))&&
     (!mag||m.magasin_id===mag));
   if(data.length===0){tbody.innerHTML=`<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--muted)">Aucun mouvement</td></tr>`;return;}
   tbody.innerHTML = data.map(m=>{
@@ -4225,6 +4267,15 @@ function loadSavedTheme() {
 loadSavedTheme();
 
 // ══════════════════════════════════════════
+//  SYSTÈME DE RÔLES — MULTI-USER v2
+//  3 niveaux : admin | manager | user
+// ══════════════════════════════════════════
+
+let CURRENT_ROLE        = null;   // 'admin' | 'manager' | 'user'
+let ALLOWED_MAGASINS    = [];     // [] = tous, sinon liste d'ids
+let CURRENT_PERMISSIONS = [];     // permissions supplémentaires accordées
+
+// ══════════════════════════════════════════
 //  GARDE DE SÉCURITÉ CÔTÉ CLIENT (defense-in-depth)
 // ══════════════════════════════════════════
 
@@ -4258,15 +4309,6 @@ function requireMagasinAccess(magasinId) {
   }
   return true;
 }
-
-// ══════════════════════════════════════════
-//  SYSTÈME DE RÔLES — MULTI-USER v2
-//  3 niveaux : admin | manager | user
-// ══════════════════════════════════════════
-
-let CURRENT_ROLE        = null;   // 'admin' | 'manager' | 'user'
-let ALLOWED_MAGASINS    = [];     // [] = tous, sinon liste d'ids
-let CURRENT_PERMISSIONS = [];     // permissions supplémentaires accordées
 
 // Définition des rôles
 const ROLE_DEFINITIONS = {
@@ -5152,7 +5194,7 @@ function showInstallBtn() {
   if(document.getElementById('pwa-install-btn')) return;
   const btn = document.createElement('button');
   btn.id = 'pwa-install-btn';
-  btn.innerHTML = '📲 Installer l'app';
+  btn.innerHTML = '📲 Installer l&#39;app';
   btn.onclick = async () => {
     if(!_deferredPrompt) return;
     _deferredPrompt.prompt();
@@ -5175,16 +5217,16 @@ function updateOnlineStatus() {
   if(!indicator) {
     indicator = document.createElement('div');
     indicator.id = 'pwa-online-indicator';
+    // Safety: never block clicks
+    indicator.style.cssText = 'position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:9500;pointer-events:none;font-size:12px;font-weight:600;padding:7px 16px;border-radius:30px;backdrop-filter:blur(10px);transition:opacity .3s;';
     document.body.appendChild(indicator);
   }
   if(online) {
+    indicator.style.opacity = '0';
     indicator.textContent = '';
-    indicator.className = 'online';
-    // Masquer après 2s si en ligne
-    setTimeout(() => { if(navigator.onLine) indicator.textContent = ''; }, 2000);
   } else {
+    indicator.style.cssText += 'background:rgba(255,107,107,.18);border:1px solid rgba(255,107,107,.35);color:#ff6b6b;opacity:1;pointer-events:none;';
     indicator.textContent = '📡 Hors ligne — données locales';
-    indicator.className = 'offline';
   }
 }
 window.addEventListener('online',  updateOnlineStatus);
